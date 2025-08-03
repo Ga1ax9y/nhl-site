@@ -1,0 +1,30 @@
+.header{
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    background-color: var(--color-light);
+    height: 72px;
+    border-bottom: 1px solid var(--color-dark-alternate);
+
+    &__logo{
+        padding-top: 4px;
+    }
+    &__nav-list{
+        display: flex;
+        flex-wrap: wrap;
+        gap: 32px;
+    }
+    &__nav-link{
+        display: inline-flex;
+        height: 72px;
+        align-items: center;
+        text-decoration: none;
+        color: var(--color-dark-alternate);
+        transition: color var(--transition-duration);
+        &:hover{
+            color: var(--color-dark-hover);
+        }
+    }
+
+
+}
