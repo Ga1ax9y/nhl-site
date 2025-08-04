@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { Team } from '../types/team';
 
-const API_BASE = "http://localhost:3000/api/"
+const API_BASE = "http://172.20.10.2/api/"
 
 export const nhlApi = axios.create({
     baseURL: API_BASE

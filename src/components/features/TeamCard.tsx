@@ -6,10 +6,9 @@ interface TeamCardProps {
 
 export default function TeamCard({team}: TeamCardProps){
     return (
-        <div>
-            <h2>{team.fullName}</h2>
-            <p>{team.teamCommonName}</p>
-            <p>{team.teamPlaceName}</p>
-        </div>
+        <li className="teams__card-item">
+            <img className="teams__card-logo" src="nhl-logo.png" ></img>
+            <h2 className="teams__card-title">{team.fullName}</h2>
+        </li>
     )
 }
