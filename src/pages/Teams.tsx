@@ -25,7 +25,9 @@ export default function Teams() {
     }, [])
     if (loading){
       return (
+
         <div className="teams__loader loader">
+          <h1 className="teams__title">Команды NHL</h1>
           <p>Загрузка команд...</p>
         </div>
       )
