@@ -1,14 +1,17 @@
 .teams{
+    padding-block: 40px;
     &__title{
+        color: var(--color-dark);
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
         text-align: center;
-        font-weight: 600;
-        font-size: 40px;
-        margin-top: 48px;
-        margin-bottom: 32px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
     &__card{
         display: grid;
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(8, 1fr);
+
 
         &-item{
             display: flex;
@@ -30,11 +33,26 @@
 
     }
     &__loader{
-        text-align: center;
     }
 }
 
-@media (max-width: 710px) {
+.loader{
+    text-align: center;
+}
+
+@media (max-width: 640px) {
+    .teams{
+        &__title {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+        &__card{
+            grid-template-columns: repeat(5, 1fr);
+        }
+    }
+}
+
+@media (max-width: 420px) {
     .teams{
         &__card{
             grid-template-columns: repeat(4, 1fr);
