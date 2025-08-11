@@ -3,6 +3,9 @@ export interface ITeam{
     teamName: {
         default: string
     }
+    teamAbbrev: {
+        default: string
+    }
     conferenceName: string
     divisionName: string
     gamesPlayed: number

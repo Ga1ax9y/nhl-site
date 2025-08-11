@@ -41,7 +41,7 @@ export default function Teams() {
           {teams
           .sort((a, b) => a.teamName.default.localeCompare(b.teamName.default))
           .map((team) => (
-            <TeamCard key={team.teamName.default} team={team} />
+            <TeamCard key={team.teamAbbrev.default} team={team} />
           ))}
         </ul>
     </section>
