@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import type { ITeam } from "../../types/team"
 
 interface StandingsCellProps {
@@ -6,9 +6,11 @@ interface StandingsCellProps {
 }
 
 export default function StandingsCell({team}: StandingsCellProps){
+    const navigate = useNavigate();
+
+    const handleRowClick = () => {navigate(`/roster/${team.teamAbbrev.default}`)}
     return (
-        <Link to={`/roster/${team.teamAbbrev.default}` } className="standings__row-link">
-            <tr className="standings__row">
+            <tr className="standings__row" onClick={handleRowClick}>
                     <td className="standings__row-cell">
                         <img className="standings__row__cell-logo" src={team.teamLogo} height="60" width="60" ></img>
                     </td>
@@ -28,6 +30,5 @@ export default function StandingsCell({team}: StandingsCellProps){
                         <p className="standings__row-cell__stat standings__row-cell__stat--points">{team.points}</p>
                     </td>
             </tr>
-        </Link>
     )
 }
