@@ -2,12 +2,15 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import type { IPlayer } from "../types/player";
 import { fetchRoster } from "../services/nhlApi";
+import PlayerCard from "../components/features/PlayerCard";
 
 export default function Roster() {
   const { teamAbbrev } = useParams<{ teamAbbrev: string }>();
   const [roster, setRoster] = useState<IPlayer[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  document.title = `NHL | Состав команды ${teamAbbrev}`
 
   useEffect(() => {
     const loadRoster = async () => {
@@ -29,9 +32,9 @@ export default function Roster() {
 
     if (loading){
       return (
-        <section className="teams container">
+        <section className="roster container">
           <div className="teams__loader loader">
-            <h1 className="teams__title">Состав команды {teamAbbrev}</h1>
+            <h1 className="teams__title">Состав команды: {teamAbbrev}</h1>
             <p>Загрузка состава команды...</p>
           </div>
         </section>
@@ -40,21 +43,13 @@ export default function Roster() {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="roster-container">
-      <h2>Состав команды: {teamAbbrev}</h2>
-      <div className="players-grid">
+    <div className="roster container">
+      <h2 className="roster__title">Состав команды: {teamAbbrev}</h2>
+      <ul className="roster__list">
         {roster.map(player => (
-          <div key={player.id} className="player-card">
-            <div className="player-number">{player.sweaterNumber}</div>
-            <div className="player-info">
-              <div className="player-name">
-                {player.firstName.default} {player.lastName.default}
-              </div>
-              <div className="player-position">{player.positionCode}</div>
-            </div>
-          </div>
+          <PlayerCard key={player.id} player={player} />
         ))}
-      </div>
+      </ul>
     </div>
   );
 }
