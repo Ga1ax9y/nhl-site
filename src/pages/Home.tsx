@@ -1,4 +1,5 @@
 export default function Home() {
+  document.title = 'NHL | Главная'
   return (
     <div>
       <h1>Главная страница</h1>

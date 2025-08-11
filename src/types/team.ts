@@ -1,5 +1,17 @@
-export interface Team{
-    id: number,
-    fullName: string,
-    teamCommonName: string,
+
+export interface ITeam{
+    teamName: {
+        default: string
+    }
+    conferenceName: string
+    divisionName: string
+    gamesPlayed: number
+    goalDifferential: number
+    goalAgainst: number
+    goalFor: number
+    losses: number
+    points: number
+    wins: number
+    teamLogo: string
+
 }

@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
-import type { IStandings} from "../types/standings";
-import { fetchStandings } from "../services/nhlApi";
+import type { ITeam} from "../types/team";
+import { fetchTeams } from "../services/nhlApi";
 import StandingsCell from "../components/features/StandingsCell";
 export default function Standings() {
-  const [standings, setStandings] = useState<IStandings[]>([])
+  const [standings, setStandings] = useState<ITeam[]>([])
   const [loading, setLoading] = useState(true);
   const [, setError] = useState<string | null>(null);
+
+  document.title = 'NHL | Турнирная таблица'
 
   useEffect(() => {
     const loadStandings = async () => {
       try {
-        const data: IStandings[] = await fetchStandings()
+        const data: ITeam[] = await fetchTeams()
         setStandings(data)
       }
       catch (err) {
@@ -54,8 +56,8 @@ export default function Standings() {
           </tr>
         </thead>
           <tbody>
-            {standings.map((position) => (
-              <StandingsCell key={position.teamName.default} position={position} />
+            {standings.map((team) => (
+              <StandingsCell key={team.teamName.default} team={team} />
             ))}
           </tbody>
         </table>

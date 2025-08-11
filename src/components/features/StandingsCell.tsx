@@ -1,27 +1,29 @@
-import type { IStandings } from "../../types/standings"
+import type { ITeam } from "../../types/team"
 
 interface StandingsCellProps {
-    position: IStandings
+    team: ITeam
 }
 
-export default function StandingsCell({position}: StandingsCellProps){
+export default function StandingsCell({team}: StandingsCellProps){
     return (
         <tr className="standings__row">
-            <img className="standings__row__cell-logo" src="nhl-logo.png" height="40" width="40" ></img>
             <td className="standings__row-cell">
-                <h2 className="standings__row-cell__title">{position.teamName.default}</h2>
+                <img className="standings__row__cell-logo" src={team.teamLogo} height="60" width="60" ></img>
             </td>
             <td className="standings__row-cell">
-                <p className="standings__row-cell__stat">{position.gamesPlayed}</p>
+                <h2 className="standings__row-cell__title">{team.teamName.default}</h2>
             </td>
             <td className="standings__row-cell">
-                <p className="standings__row-cell__stat standings__row-cell__stat--wins">{position.wins}</p>
+                <p className="standings__row-cell__stat">{team.gamesPlayed}</p>
             </td>
             <td className="standings__row-cell">
-                <p className="standings__row-cell__stat standings__row-cell__stat--losses">{position.losses}</p>
+                <p className="standings__row-cell__stat standings__row-cell__stat--wins">{team.wins}</p>
             </td>
             <td className="standings__row-cell">
-                <p className="standings__row-cell__stat standings__row-cell__stat--points">{position.points}</p>
+                <p className="standings__row-cell__stat standings__row-cell__stat--losses">{team.losses}</p>
+            </td>
+            <td className="standings__row-cell">
+                <p className="standings__row-cell__stat standings__row-cell__stat--points">{team.points}</p>
             </td>
         </tr>
     )
