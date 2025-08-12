@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 90vh;
+  min-height: 80vh;
   background-color: var(--color-light-alternate);
   padding: 2rem;
   text-align: center;
@@ -41,7 +41,7 @@
     border-radius: 4px;
     transition: background-color var(--transition-duration);
 
-    &:hover {
+    &:active {
       background-color: var(--color-dark-hover);
     }
   }

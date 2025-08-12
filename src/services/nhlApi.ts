@@ -19,3 +19,8 @@ export const fetchRoster = async (teamAbbrev: string): Promise<IPlayer []> => {
     const {forwards = [], defensemen = [], goalies = []} = response.data
     return [...forwards, ...defensemen, ...goalies]
 }
+
+export const fetchPlayerById = async (playerId: string): Promise<IPlayer> => {
+    const response = await nhlApi.get(`player/${playerId}`)
+    return response.data
+}

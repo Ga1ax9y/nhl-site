@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import type { IPlayer } from "../../types/player";
 
 interface PlayerCardProps {
@@ -5,9 +6,13 @@ interface PlayerCardProps {
 }
 
 export default function PlayerCard({ player }: PlayerCardProps) {
+  const navigate = useNavigate();
+  const toggleDetails = () => {
+    navigate(`/player/${player.id}`);
+  };
   return (
     <li className="roster__list-item">
-      <div className="player-card">
+      <div className="player-card" onClick={toggleDetails}>
         <div className="player-card__image-container">
           <img
             className="player-card__image"

@@ -7,6 +7,7 @@ import Standings from '../pages/Standings';
 import Roster from '../pages/Roster';
 import NotFound from '../pages/NotFound';
 import Home from '../pages/Home';
+import PlayerInfo from '../pages/PlayerInfo';
 
 const Layout = () => {
   return (
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
         element: <Roster />,
       },
       {
+        path: 'player/:playerId',
+        element: <PlayerInfo />,
+      },
+      {
         path: '*',
         element: <NotFound />,
       },
@@ -52,7 +57,6 @@ const router = createBrowserRouter([
   },
 ]);
 function App() {
-  console.log('App rendered') // Проверьте, рендерится ли компонент
   return <RouterProvider router={router} />
 }
 
