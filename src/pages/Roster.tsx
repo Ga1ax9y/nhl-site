@@ -10,7 +10,7 @@ export default function Roster() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  document.title = `NHL | Состав команды ${teamAbbrev}`
+  document.title = `NHL | Team roster ${teamAbbrev}`
 
   useEffect(() => {
     const loadRoster = async () => {
@@ -34,8 +34,8 @@ export default function Roster() {
       return (
         <section className="roster container">
           <div className="teams__loader loader">
-            <h1 className="teams__title">Состав команды: {teamAbbrev}</h1>
-            <p>Загрузка состава команды...</p>
+            <h1 className="teams__title">Team roster: {teamAbbrev}</h1>
+            <p>Loading...</p>
           </div>
         </section>
       )
@@ -43,13 +43,13 @@ export default function Roster() {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="roster container">
-      <h2 className="roster__title">Состав команды: {teamAbbrev}</h2>
+    <section className="roster container">
+      <h2 className="roster__title">Team roster: {teamAbbrev}</h2>
       <ul className="roster__list">
         {roster.map(player => (
           <PlayerCard key={player.id} player={player} />
         ))}
       </ul>
-    </div>
+    </section>
   );
 }

@@ -7,7 +7,7 @@ export default function Standings() {
   const [loading, setLoading] = useState(true);
   const [, setError] = useState<string | null>(null);
 
-  document.title = 'NHL | Турнирная таблица'
+  document.title = 'NHL | Standings'
 
   useEffect(() => {
     const loadStandings = async () => {
@@ -27,7 +27,7 @@ export default function Standings() {
       return (
         <section className="standings container">
           <div className="standings__loader loader">
-            <h1 className="standings__title">Общая турнирная таблица</h1>
+            <h1 className="standings__title"></h1>
             <p>Загрузка команд...</p>
           </div>
         </section>
@@ -35,23 +35,23 @@ export default function Standings() {
     }
   return (
     <section className="standings container">
-        <h1 className="standings__title">Общая турнирная таблица</h1>
+        <h1 className="standings__title">League Standings</h1>
         <table className="standings__table">
         <thead>
           <tr className="table-header">
             <th className="table-header__item"></th>
-            <th className="table-header__item">Команда</th>
-            <th className="table-header__item" data-short="И">
-              <span className="long-text">Игры</span>
+            <th className="table-header__item">Team</th>
+            <th className="table-header__item" data-short="G">
+              <span className="long-text">Games</span>
             </th>
-            <th className="table-header__item" data-short="В">
-              <span className="long-text">Победы</span>
+            <th className="table-header__item" data-short="W">
+              <span className="long-text">Wins</span>
             </th>
-            <th className="table-header__item" data-short="П">
-              <span className="long-text">Поражения</span>
+            <th className="table-header__item" data-short="L">
+              <span className="long-text">Loses</span>
             </th>
-            <th className="table-header__item" data-short="О">
-              <span className="long-text">Очки</span>
+            <th className="table-header__item" data-short="P">
+              <span className="long-text">Points</span>
             </th>
           </tr>
         </thead>

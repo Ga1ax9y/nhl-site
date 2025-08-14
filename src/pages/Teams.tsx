@@ -7,7 +7,7 @@ export default function Teams() {
     const [teams, setTeams] = useState<ITeam[]>([])
     const [loading, setLoading] = useState(true);
     const [, setError] = useState<string | null>(null);
-    document.title = 'NHL | Команды'
+    document.title = 'NHL | Teams'
     useEffect(() => {
         const loadTeams = async () =>{
           try{
@@ -28,15 +28,15 @@ export default function Teams() {
       return (
         <section className="teams container">
           <div className="teams__loader loader">
-            <h1 className="teams__title">Команды NHL</h1>
-            <p>Загрузка команд...</p>
+            <h1 className="teams__title">Teams</h1>
+            <p>Loading...</p>
           </div>
         </section>
       )
     }
   return (
     <section className="teams container">
-        <h1 className="teams__title">Команды NHL</h1>
+        <h1 className="teams__title">Teams</h1>
         <ul className="teams__card">
           {teams
           .sort((a, b) => a.teamName.default.localeCompare(b.teamName.default))

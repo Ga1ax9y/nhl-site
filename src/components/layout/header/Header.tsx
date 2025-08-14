@@ -34,16 +34,16 @@ export default function Header(){
                 <nav className="header__nav-desktop">
                     <ul className="header__nav-list">
                         <li>
-                            <Link className="header__nav-link" to="/schedule">Календарь</Link>
+                            <Link className="header__nav-link" to="/schedule">Schedule</Link>
                         </li>
                         <li>
-                            <Link className="header__nav-link" to="/standings">Таблицы</Link>
+                            <Link className="header__nav-link" to="/standings">Standings</Link>
                         </li>
                         <li>
-                            <Link className="header__nav-link" to="/teams">Клубы</Link>
+                            <Link className="header__nav-link" to="/teams">Teams</Link>
                         </li>
                         <li>
-                            <Link className="header__nav-link" to="/stats">Статистика</Link>
+                            <Link className="header__nav-link" to="/stats">Stats</Link>
                         </li>
                     </ul>
                 </nav>
@@ -53,27 +53,27 @@ export default function Header(){
                             <ul className="header__overlay-list">
                                 <li className="header__overlay-item">
                                     <Link className="header__overlay-link" to="/" onClick={toggleMenu}>
-                                        Главная
+                                        Home
                                     </Link>
                                 </li>
                                 <li className="header__overlay-item">
                                     <Link className="header__overlay-link" to="/standings" onClick={toggleMenu}>
-                                        Таблицы
+                                        Standings
                                     </Link>
                                 </li>
                                 <li className="header__overlay-item">
                                     <Link className="header__overlay-link" to="/teams" onClick={toggleMenu}>
-                                        Команды
+                                        Teams
                                     </Link>
                                 </li>
                                 <li className="header__overlay-item">
                                     <Link className="header__overlay-link" to="/players" onClick={toggleMenu}>
-                                        Игроки
+                                        Players
                                     </Link>
                                 </li>
                                 <li className="header__overlay-item">
                                     <Link className="header__overlay-link" to="/schedule" onClick={toggleMenu}>
-                                        Матчи
+                                        Schedule
                                     </Link>
                                 </li>
                             </ul>

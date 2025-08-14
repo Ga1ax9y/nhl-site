@@ -1,14 +1,25 @@
 .teams{
     padding: 2rem var(--container-padding-x);
-    
+
     &__title{
-        font-size: 2rem;
-        margin-bottom: 2.5rem;
-        color: var(--color-dark);
-        text-align: center;
-        position: relative;
-        padding-bottom: 1rem;
-        text-transform: uppercase;
+      font-family: var(--font-family-alternate);
+      color: var(--color-dark);
+      font-size: 2.2rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      position: relative;
+      padding-bottom: 1rem;
+
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 100px;
+          height: 3px;
+          background-color: var(--color-dark);
+        }
     }
     &__card{
         display: grid;

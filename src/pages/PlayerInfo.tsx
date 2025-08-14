@@ -9,7 +9,7 @@ export default function PlayerInfo() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
-    document.title = 'NHL | Информация о игроке'
+    document.title = 'NHL | Information about player'
 
     useEffect(() => {
         const loadPlayer = async () => {
@@ -33,13 +33,13 @@ export default function PlayerInfo() {
       return (
         <section className="player container">
           <div className="player__loader loader">
-            <p>Загрузка состава команды...</p>
+            <p>Loading...</p>
           </div>
         </section>
       )
     }
   if (error) return <div className="error-message">{error}</div>;
-  if (!player) return <div className="error-message">Игрок не найден</div>;
+  if (!player) return <div className="error-message">Player not found</div>;
 
     return (
         <section className="player container">
@@ -71,43 +71,67 @@ export default function PlayerInfo() {
                     </div>
                 </div>
             </div>
+            <div className="player__details">
+                <div className="player__details-grid">
+                    <div className="player__detail-card">
+                        <span className="player__detail-label">Хват</span>
+                        <span className="player__detail-value">{player.shootsCatches === 'L' ? 'Левый' : 'Правый'}</span>
+                    </div>
+                    <div className="player__detail-card">
+                        <span className="player__detail-label">Рост</span>
+                        <span className="player__detail-value">{player.heightInCentimeters}</span>
+                    </div>
+                    <div className="player__detail-card">
+                        <span className="player__detail-label">Вес</span>
+                        <span className="player__detail-value">{player.weightInKilograms}</span>
+                    </div>
+                    <div className="player__detail-card">
+                        <span className="player__detail-label">Дата рождения</span>
+                        <span className="player__detail-value">{player.birthDate}</span>
+                    </div>
+                    <div className="player__detail-card">
+                        <span className="player__detail-label">Страна</span>
+                        <span className="player__detail-value">{player.birthCountry}</span>
+                    </div>
+                </div>
+            </div>
 
             <div className="player__stats">
-                <div className="stats-grid">
-                    <div className="stat-card">
-                        <span className="stat-label">Игры</span>
-                        <span className="stat-value">{player.featuredStats.regularSeason.subSeason.gamesPlayed || 0}</span>
+                <div className="player__stats-grid">
+                    <div className="player__stat-card">
+                        <span className="player__stat-label">Игры</span>
+                        <span className="player__stat-value">{player.featuredStats.regularSeason.subSeason.gamesPlayed || 0}</span>
                     </div>
-                    <div className="stat-card">
-                        <span className="stat-label">Голы</span>
-                        <span className="stat-value">{player.featuredStats.regularSeason.subSeason.goals || 0}</span>
+                    <div className="player__stat-card">
+                        <span className="player__stat-label">Голы</span>
+                        <span className="player__stat-value">{player.featuredStats.regularSeason.subSeason.goals || 0}</span>
                     </div>
-                    <div className="stat-card">
-                        <span className="stat-label">Передачи</span>
-                        <span className="stat-value">{player.featuredStats.regularSeason.subSeason.assists || 0}</span>
+                    <div className="player__stat-card">
+                        <span className="player__stat-label">Передачи</span>
+                        <span className="player__stat-value">{player.featuredStats.regularSeason.subSeason.assists || 0}</span>
                     </div>
-                    <div className="stat-card">
-                        <span className="stat-label">Очки</span>
-                        <span className="stat-value">{player.featuredStats.regularSeason.subSeason.points || 0}</span>
+                    <div className="player__stat-card">
+                        <span className="player__stat-label">Очки</span>
+                        <span className="player__stat-value">{player.featuredStats.regularSeason.subSeason.points || 0}</span>
                     </div>
                     {player.positionCode !== 'G' && (
                         <>
-                            <div className="stat-card">
-                                <span className="stat-label">+/-</span>
-                                <span className="stat-value">{player.featuredStats.regularSeason.subSeason.plusMinus || 0}</span>
+                            <div className="player__stat-card">
+                                <span className="player__stat-label">+/-</span>
+                                <span className="player__stat-value">{player.featuredStats.regularSeason.subSeason.plusMinus || 0}</span>
                             </div>
                         </>
                     )}
                     {player.positionCode === 'G' && (
                         <>
-                            <div className="stat-card">
-                                <span className="stat-label">% сейвов</span>
-                                <span className="stat-value">
+                            <div className="player__stat-card">
+                                <span className="player__stat-label">% сейвов</span>
+                                <span className="player__stat-value">
                                     {/* {player.savePercentage ? player.savePercentage.toFixed(2) : '0.00'} */}
                                 </span>
                             </div>
-                            <div className="stat-card">
-                                <span className="stat-label">Сухие игры</span>
+                            <div className="player__stat-card">
+                                <span className="player__stat-label">Сухие игры</span>
                                 {/* <span className="stat-value">{player.shutouts || 0}</span> */}
                             </div>
                         </>
