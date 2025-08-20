@@ -14,7 +14,6 @@ export default function Home() {
       try{
         setLoading(true)
         const data: INews[] = await fetchNews()
-        console.log(data)
         setNews(data)
       }
       catch(err){
@@ -39,7 +38,7 @@ export default function Home() {
   )
 
   if (error) return <div className="error-message container">{error}</div>
-  
+
   const newsCount: number = 4
   const visibleNews = expanded ? news : news.slice(0, newsCount);
   const hasMore = news.length > newsCount;

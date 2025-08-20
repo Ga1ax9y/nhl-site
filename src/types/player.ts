@@ -1,4 +1,4 @@
-export interface IPlayer{
+interface IPlayerBase{
     id: number,
     headshot: string,
     firstName: {
@@ -12,6 +12,17 @@ export interface IPlayer{
     }
     currentTeamAbbrev: string,
     teamLogo: string,
+        sweaterNumber: number,
+    positionCode?: 'L' | 'R' | 'C' | 'D' | 'G',
+    position?: 'L' | 'R' | 'C' | 'D' | 'G',
+    shootsCatches: string,
+    heightInCentimeters: number,
+    weightInKilograms: number,
+    birthDate: string,
+    birthCountry: string,
+}
+
+export interface ISkater extends IPlayerBase{
     featuredStats: {
         season: string,
         regularSeason: {
@@ -30,14 +41,69 @@ export interface IPlayer{
                 plusMinus: number,
                 points: number
             }
+        },
+        playoffs: {
+            subSeason: {
+                gamesPlayed: number,
+                goals: number,
+                assists: number
+                plusMinus: number,
+                points: number
+            },
+            career: {
+                gamesPlayed: number,
+                goals: number,
+                assists: number
+                plusMinus: number,
+                points: number
+            }
         }
     }
-    sweaterNumber: number,
-    positionCode: string,
-    shootsCatches: string,
-    heightInCentimeters: number,
-    weightInKilograms: number,
-    birthDate: string,
-    birthCountry: string,
-
 }
+
+export interface IGoalie extends IPlayerBase{
+    featuredStats: {
+        season: string,
+        regularSeason: {
+            subSeason: {
+                gamesPlayed: number,
+                goalsAgainstAvg: number,
+                losses: number,
+                otLosses: number,
+                savePctg: number,
+                shutouts: number,
+                wins: number
+            },
+            career: {
+                gamesPlayed: number,
+                goalsAgainstAvg: number,
+                losses: number,
+                otLosses: number,
+                savePctg: number,
+                shutouts: number,
+                wins: number
+            }
+        },
+        playoffs: {
+            subSeason: {
+                gamesPlayed: number,
+                goalsAgainstAvg: number,
+                losses: number,
+                otLosses: number,
+                savePctg: number,
+                shutouts: number,
+                wins: number
+            },
+            career: {
+                gamesPlayed: number,
+                goalsAgainstAvg: number,
+                losses: number,
+                otLosses: number,
+                savePctg: number,
+                shutouts: number,
+                wins: number
+            }
+        }
+    }
+}
+export type IPlayer = ISkater | IGoalie

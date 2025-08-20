@@ -135,9 +135,12 @@
         padding: 2rem;
     }
 
-    &__stats-title {
+    &__stats-title:not(:first-child) {
         font-size: 1.5rem;
         color: var(--color-dark);
+        padding-block: 1rem;
+    }
+    &__stats-title:first-child{
         padding-bottom: 1rem;
     }
 

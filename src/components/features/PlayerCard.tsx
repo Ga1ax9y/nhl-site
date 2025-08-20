@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import type { IPlayer } from "../../types/player";
+import type{ IPlayer } from "../../types/player";
 
 interface PlayerCardProps {
     player: IPlayer
