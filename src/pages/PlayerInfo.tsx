@@ -72,46 +72,47 @@ export default function PlayerInfo() {
                 </div>
             </div>
             <div className="player__details">
-                <div className="player__details-grid">
-                    <div className="player__detail-card">
-                        <span className="player__detail-label">Хват</span>
-                        <span className="player__detail-value">{player.shootsCatches === 'L' ? 'Левый' : 'Правый'}</span>
+                <div className="player__details-list">
+                    <div className="player__details-item">
+                        <span className="player__detail-label">Grip: </span>
+                        <span className="player__detail-value">{player.shootsCatches === 'L' ? 'Left' : 'Right'}</span>
                     </div>
-                    <div className="player__detail-card">
-                        <span className="player__detail-label">Рост</span>
-                        <span className="player__detail-value">{player.heightInCentimeters}</span>
+                    <div className="player__details-item">
+                        <span className="player__detail-label">Height: </span>
+                        <span className="player__detail-value">{player.heightInCentimeters} cm</span>
                     </div>
-                    <div className="player__detail-card">
-                        <span className="player__detail-label">Вес</span>
-                        <span className="player__detail-value">{player.weightInKilograms}</span>
+                    <div className="player__details-item">
+                        <span className="player__detail-label">Weight: </span>
+                        <span className="player__detail-value">{player.weightInKilograms} kg</span>
                     </div>
-                    <div className="player__detail-card">
-                        <span className="player__detail-label">Дата рождения</span>
+                    <div className="player__details-item">
+                        <span className="player__detail-label">Birthdate: </span>
                         <span className="player__detail-value">{player.birthDate}</span>
                     </div>
-                    <div className="player__detail-card">
-                        <span className="player__detail-label">Страна</span>
+                    <div className="player__details-item">
+                        <span className="player__detail-label">Country: </span>
                         <span className="player__detail-value">{player.birthCountry}</span>
                     </div>
                 </div>
             </div>
 
             <div className="player__stats">
+                <h2 className="player__stats-title">Regular Season</h2>
                 <div className="player__stats-grid">
                     <div className="player__stat-card">
-                        <span className="player__stat-label">Игры</span>
+                        <span className="player__stat-label">Games</span>
                         <span className="player__stat-value">{player.featuredStats.regularSeason.subSeason.gamesPlayed || 0}</span>
                     </div>
                     <div className="player__stat-card">
-                        <span className="player__stat-label">Голы</span>
+                        <span className="player__stat-label">Goals</span>
                         <span className="player__stat-value">{player.featuredStats.regularSeason.subSeason.goals || 0}</span>
                     </div>
                     <div className="player__stat-card">
-                        <span className="player__stat-label">Передачи</span>
+                        <span className="player__stat-label">Assists</span>
                         <span className="player__stat-value">{player.featuredStats.regularSeason.subSeason.assists || 0}</span>
                     </div>
                     <div className="player__stat-card">
-                        <span className="player__stat-label">Очки</span>
+                        <span className="player__stat-label">Points</span>
                         <span className="player__stat-value">{player.featuredStats.regularSeason.subSeason.points || 0}</span>
                     </div>
                     {player.positionCode !== 'G' && (

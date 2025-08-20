@@ -11,7 +11,6 @@
     background-color: var(--color-dark);
     color: var(--color-light);
     border: none;
-    padding: 0.8rem 2rem;
     border-radius: 4px;
     font-size: 1rem;
     cursor: pointer;
@@ -19,12 +18,9 @@
     min-width: 200px;
     text-decoration: none;
 
-    &:hover {
+    &:active {
       background-color: var(--color-dark-hover);
       transform: translateY(-2px);
-    }
-
-    &:active {
       transform: translateY(0);
     }
 }

@@ -27,8 +27,8 @@ export default function Standings() {
       return (
         <section className="standings container">
           <div className="standings__loader loader">
-            <h1 className="standings__title"></h1>
-            <p>Загрузка команд...</p>
+            <h1 className="standings__title">League Standings</h1>
+            <p>Loading...</p>
           </div>
         </section>
       )

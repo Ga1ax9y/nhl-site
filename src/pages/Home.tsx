@@ -39,9 +39,10 @@ export default function Home() {
   )
 
   if (error) return <div className="error-message container">{error}</div>
-
-  const visibleNews = expanded ? news : news.slice(0, 3);
-  const hasMore = news.length > 3;
+  
+  const newsCount: number = 4
+  const visibleNews = expanded ? news : news.slice(0, newsCount);
+  const hasMore = news.length > newsCount;
   const formatDate = (dateString: string) => {
     const options: Intl.DateTimeFormatOptions = {
       day: 'numeric',

@@ -19,7 +19,7 @@ export default function Header(){
                     width="55"
                     alt="nhl logo" />
                 </Link>
-                <button className={`header__burger button ${isMenuOpen ? 'open' : ''}`} aria-label="open menu" onClick={toggleMenu}>
+                <button className={`header__burger ${isMenuOpen ? 'open' : ''}`} aria-label="open menu" onClick={toggleMenu}>
                     <svg className="header__burger-icon" width="36px" height="36px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M4 18L20 18" stroke="#000000" strokeWidth="2" strokeLinecap="round"/>
                         <path d="M4 12L20 12" stroke="#000000" strokeWidth="2" strokeLinecap="round"/>
