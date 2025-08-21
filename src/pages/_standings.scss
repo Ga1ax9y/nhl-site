@@ -10,19 +10,69 @@
       position: relative;
       padding-bottom: 1rem;
 
-        &::after {
-          content: '';
-          position: absolute;
-          bottom: 0;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 100px;
-          height: 3px;
-          background-color: var(--color-dark);
-    }
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background-color: var(--color-dark);
+      }
 
     }
-      &__table {
+
+    &__controls {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 1rem;
+      border-radius: 8px;
+  }
+
+    &__button {
+      background-color: var(--color-light);
+      color: var(--color-dark);
+      border: 2px solid var(--color-dark);
+      padding: 0.8rem 0;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: var(--font-family-base);
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all var(--transition-duration) ease;
+      width: 140px;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      flex-shrink: 0;
+
+
+      &:hover {
+        background-color: var(--color-dark-alternate);
+        color: var(--color-light);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      }
+      &:active {
+        transform: translateY(0);
+      }
+
+      &--active {
+        background-color: var(--color-dark);
+        color: var(--color-light);
+        border-color: var(--color-dark);
+
+        &:active {
+          background-color: var(--color-dark-hover);
+          border-color: var(--color-dark-hover);
+        }
+      }
+    }
+    &__table {
         width: 100%;
         border-collapse: collapse;
         background-color: var(--color-light);
@@ -115,6 +165,36 @@
   }
 }
 
+.playoff-cutline {
+  &__line {
+    height: 3px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--color-dark) 20%,
+      var(--color-dark) 80%,
+      transparent 100%
+    );
+    margin: -2.75px 0;
+    position: relative;
+
+    &::before {
+      content: 'Playoff Zone';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: var(--color-dark);
+      color: var(--color-light);
+      padding: 0.2rem 0.8rem;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+  }
+}
+
 @media (max-width: 640px) {
     .standings {
         &__title {
@@ -152,14 +232,16 @@
 
   .standings {
     padding: 32px 8px;
-  }
-  .standings__row {
-    grid-template-columns: 35px 1fr 30px 30px 30px 30px;
 
-    &:nth-child(6) {
-      display: none;
+    &__row {
+      grid-template-columns: 35px 1fr 30px 30px 30px 30px;
+
+      &:nth-child(6) {
+        display: none;
+      }
     }
   }
+
 
   .table-header {
     grid-template-columns: 35px 1fr 30px 30px 30px 30px;

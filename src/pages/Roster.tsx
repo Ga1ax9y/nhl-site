@@ -33,8 +33,8 @@ export default function Roster() {
     if (loading){
       return (
         <section className="roster container">
-          <div className="teams__loader loader">
-            <h1 className="teams__title">Team roster: {teamAbbrev}</h1>
+          <div className="roster__loader loader">
+            <h1 className="roster__title">Team roster: {teamAbbrev}</h1>
             <p>Loading...</p>
           </div>
         </section>
