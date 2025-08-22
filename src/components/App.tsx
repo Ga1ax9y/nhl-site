@@ -8,6 +8,8 @@ import Roster from '../pages/Roster';
 import NotFound from '../pages/NotFound';
 import Home from '../pages/Home';
 import PlayerInfo from '../pages/PlayerInfo';
+import Footer from './layout/footer/Footer';
+import ScrollToTop from './layout/scrollToTop/ScrollToTop';
 
 const Layout = () => {
   return (
@@ -16,6 +18,8 @@ const Layout = () => {
       <main className="content">
         <Outlet />
       </main>
+      <Footer />
+      <ScrollToTop />
     </>
   );
 };
