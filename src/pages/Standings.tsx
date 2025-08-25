@@ -31,12 +31,12 @@ export default function Standings() {
   if (loading) {
     return (
       <section className="standings container">
-        <div className="standings__controls">
+        <div className="standings__controls controls">
           {["wildcard", "division", "conference", "league"].map((view) => (
             <button
               key={view}
-              className={`standings__button ${
-                currentView === view ? "standings__button--active" : ""
+              className={`controls__button ${
+                currentView === view ? "controls__button--active" : ""
               }`}
               onClick={() => setCurrentView(view as StandingsView)}
               type="button"
@@ -70,20 +70,20 @@ export default function Standings() {
   };
   return (
     <section className="standings container">
-      <div className="standings__controls">
-        {["wildcard", "division", "conference", "league"].map((view) => (
-          <button
-            key={view}
-            className={`standings__button ${
-              currentView === view ? "standings__button--active" : ""
-            }`}
-            onClick={() => setCurrentView(view as StandingsView)}
-            type="button"
-          >
-            {view === "wildcard" ? "Wild Card" : view.charAt(0).toUpperCase() + view.slice(1)}
-          </button>
-        ))}
-      </div>
+        <div className="standings__controls controls">
+          {["wildcard", "division", "conference", "league"].map((view) => (
+            <button
+              key={view}
+              className={`controls__button ${
+                currentView === view ? "controls__button--active" : ""
+              }`}
+              onClick={() => setCurrentView(view as StandingsView)}
+              type="button"
+            >
+              {view === "wildcard" ? "Wild Card" : view.charAt(0).toUpperCase() + view.slice(1)}
+            </button>
+          ))}
+        </div>
 
       {currentView === "league" && (
         <StandingsTable title="League Standings" teams={standings} />

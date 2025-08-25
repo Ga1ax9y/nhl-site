@@ -1,0 +1,275 @@
+.stats {
+  padding: 2rem var(--container-padding-x);
+
+  &__title {
+    font-family: var(--font-family-alternate);
+    color: var(--color-dark);
+    font-size: 2.2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    position: relative;
+    padding-bottom: 1rem;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 3px;
+      background-color: var(--color-dark);
+    }
+  }
+
+  &__content {
+    margin-bottom: 2rem;
+  }
+
+  &__subtitle {
+    font-size: 1.3rem;
+    color: var(--color-dark);
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--color-light);
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  &__header {
+    display: grid;
+    grid-template-columns: 60px 1fr 120px 80px;
+    padding: 12px 16px;
+    background-color: var(--color-dark-alternate);
+    color: var(--color-light);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+
+    &-cell {
+      text-align: center;
+
+      &:nth-child(2) {
+        text-align: left;
+      }
+    }
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: 60px 1fr 120px 80px;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--color-gray);
+    transition: background-color var(--transition-duration);
+
+    &:hover {
+      background-color: var(--color-light-alternate);
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__cell {
+    &--rank {
+      text-align: center;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--color-dark);
+    }
+
+    &--stat {
+      text-align: center;
+    }
+  }
+
+  &__player {
+    &-info {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    &-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--color-gray);
+    }
+
+    &-title {
+      font-weight: 600;
+      color: var(--color-dark);
+      margin: 0;
+      font-size: 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  &__team {
+    &-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+
+    &-logo {
+      width: 30px;
+      height: 30px;
+      object-fit: contain;
+    }
+
+    &-name {
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+  }
+
+  &__stat {
+    &-value {
+      text-align: center;
+      font-weight: 500;
+      margin: 0;
+      font-size: 0.95rem;
+      color: var(--color-dark);
+      font-weight: 700;
+
+      &--points {
+        color: var(--color-dark);
+      }
+    }
+  }
+
+  &__loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    gap: 1rem;
+  }
+
+  &__error {
+    text-align: center;
+    padding: 2rem;
+    color: #d32f2f;
+    background-color: rgba(211, 47, 47, 0.1);
+    border-radius: 8px;
+    margin: 2rem 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .stats {
+    padding: 1rem var(--container-padding-x);
+
+    &__title {
+      font-size: 1.8rem;
+    }
+
+    &__header {
+      grid-template-columns: 40px 1fr 80px 60px;
+      padding: 10px 12px;
+      font-size: 0.7rem;
+    }
+
+    &__row {
+      grid-template-columns: 40px 1fr 80px 60px;
+      padding: 10px 12px;
+    }
+
+    &__player {
+      &-logo {
+        width: 35px;
+        height: 35px;
+      }
+
+      &-title {
+        font-size: 0.9rem;
+      }
+    }
+
+    &__team {
+      &-logo {
+        width: 25px;
+        height: 25px;
+      }
+
+      &-name {
+        font-size: 0.85rem;
+      }
+    }
+
+    &__stat-value {
+      font-size: 0.9rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .stats {
+    padding: 1rem 0.5rem;
+
+    &__header {
+      grid-template-columns: 30px 1fr 60px 50px;
+      padding: 8px 10px;
+    }
+
+    &__row {
+      grid-template-columns: 30px 1fr 60px 50px;
+      padding: 8px 10px;
+    }
+
+    &__player {
+      &-info {
+        gap: 0.5rem;
+      }
+
+      &-logo {
+        width: 30px;
+        height: 30px;
+      }
+
+      &-title {
+        font-size: 0.8rem;
+      }
+    }
+
+    &__team {
+      &-info {
+        gap: 0.3rem;
+      }
+
+      &-logo {
+        width: 20px;
+        height: 20px;
+      }
+
+      &-name {
+        font-size: 0.8rem;
+      }
+    }
+
+    &__stat-value {
+      font-size: 0.85rem;
+    }
+
+    &__button {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+    }
+  }
+}

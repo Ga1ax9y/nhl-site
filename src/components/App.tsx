@@ -10,6 +10,7 @@ import Home from '../pages/Home';
 import PlayerInfo from '../pages/PlayerInfo';
 import Footer from './layout/footer/Footer';
 import ScrollToTop from './layout/scrollToTop/ScrollToTop';
+import Stats from '../pages/Stats';
 
 const Layout = () => {
   return (
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
       {
         path: '/standings',
         element: <Standings />,
+      },
+      {
+        path: '/stats',
+        element: <Stats />,
       },
       {
         path: '/roster/:teamAbbrev',

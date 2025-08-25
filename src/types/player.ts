@@ -20,6 +20,7 @@ interface IPlayerBase{
     weightInKilograms: number,
     birthDate: string,
     birthCountry: string,
+    value: number
 }
 
 export interface ISkater extends IPlayerBase{
