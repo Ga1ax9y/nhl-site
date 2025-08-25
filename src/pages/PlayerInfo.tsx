@@ -38,8 +38,27 @@ export default function PlayerInfo() {
         </section>
       )
     }
-  if (error) return <div className="error-message">{error}</div>;
-  if (!player) return <div className="error-message">Player not found</div>;
+    if (error) return <div className="error-message">{error}</div>;
+    if (!player) return <div className="error-message">Player not found</div>;
+
+    const calculateAge = (birthDate: string): number => {
+    const birth = new Date(birthDate);
+
+    if (isNaN(birth.getTime())) {
+        throw new Error('Invalid date string');
+    }
+
+    const today = new Date();
+
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+        age--;
+    }
+
+    return age;
+    };
 
     return (
         <section className="player container">
@@ -86,8 +105,8 @@ export default function PlayerInfo() {
                         <span className="player__detail-value">{player.weightInKilograms} kg</span>
                     </div>
                     <div className="player__details-item">
-                        <span className="player__detail-label">Birthdate: </span>
-                        <span className="player__detail-value">{player.birthDate}</span>
+                        <span className="player__detail-label">Born: </span>
+                        <span className="player__detail-value">{player.birthDate} (Age: {calculateAge(player.birthDate)})</span>
                     </div>
                     <div className="player__details-item">
                         <span className="player__detail-label">Country: </span>
@@ -203,7 +222,7 @@ export default function PlayerInfo() {
                     {player.featuredStats && (
                     <div className="player__stat-card">
                         <span className="player__stat-label">Games</span>
-                            <span className="player__stat-value">{player.featuredStats.regularSeason.subSeason.gamesPlayed || 0}</span>
+                            <span className="player__stat-value">{player.featuredStats.regularSeason.career.gamesPlayed || 0}</span>
                     </div>
                     )}
                 {player.position !== 'G' &&(
@@ -248,7 +267,6 @@ export default function PlayerInfo() {
                 </>
                 )}
                 </div>
-
             </div>
             </>
             )}
