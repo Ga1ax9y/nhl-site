@@ -96,12 +96,14 @@ export default function PlayerInfo() {
                 </div>
             </div>
 
+            {player.featuredStats && (
+            <>
             <div className="player__stats">
                 <h2 className="player__stats-title">Regular Season</h2>
                 <div className="player__stats-grid">
                     <div className="player__stat-card">
                         <span className="player__stat-label">Games</span>
-                        <span className="player__stat-value">{player.featuredStats.regularSeason.subSeason.gamesPlayed || 0}</span>
+                            <span className="player__stat-value">{player.featuredStats.regularSeason.subSeason.gamesPlayed || 0}</span>
                     </div>
                 {player.position !== 'G' && (
                 <>
@@ -129,7 +131,7 @@ export default function PlayerInfo() {
                         <span className="player__stat-label">Save %</span>
                         <span className="player__stat-value">
                             {((player as IGoalie).featuredStats.regularSeason.subSeason.savePctg * 100).toFixed(2) || 0}</span>
-                            </div>
+                    </div>
                     <div className="player__stat-card">
                         <span className="player__stat-label">Shutouts</span>
                         <span className="player__stat-value">{(player as IGoalie).featuredStats.regularSeason.subSeason.shutouts || 0}</span>
@@ -173,7 +175,7 @@ export default function PlayerInfo() {
                         </div>
                     </>
                     )}
-                    {player.position === 'G' && (
+                    {player.position === 'G' && player.featuredStats.playoffs &&  (
                     <>
                         <div className="player__stat-card">
                             <span className="player__stat-label">Save %</span>
@@ -198,11 +200,13 @@ export default function PlayerInfo() {
                 </>)}
                 <h2 className="player__stats-title">Career</h2>
                 <div className="player__stats-grid">
+                    {player.featuredStats && (
                     <div className="player__stat-card">
                         <span className="player__stat-label">Games</span>
-                        <span className="player__stat-value">{player.featuredStats.regularSeason.career.gamesPlayed || 0}</span>
+                            <span className="player__stat-value">{player.featuredStats.regularSeason.subSeason.gamesPlayed || 0}</span>
                     </div>
-                {player.position !== 'G' && (
+                    )}
+                {player.position !== 'G' &&(
                 <>
                     <div className="player__stat-card">
                         <span className="player__stat-label">Goals</span>
@@ -245,8 +249,9 @@ export default function PlayerInfo() {
                 )}
                 </div>
 
-
             </div>
+            </>
+            )}
         </section>
     );
 }
