@@ -14,7 +14,6 @@ app.use(
   })
 );
 
-// Прокси для команд
 app.get('/api/teams', async (req, res) => {
   try {
     const response = await axios.get('https://api.nhle.com/stats/rest/en/franchise');
@@ -32,6 +31,22 @@ app.get('/api/standings', async (req, res) => {
   } catch (error) {
     console.error('Error fetching standings:', error.message);
     res.status(500).json({ error: 'Failed to fetch standings' });
+  }
+})
+
+app.get('/api/stats', async (req, res) => {
+  try{
+    const [goalsData, assistsData, pointsData, plusMinusData] = await Promise.all([
+      axios.get('https://api-web.nhle.com/v1/skater-stats-leaders/20242025/2?categories=goals&limit=5'),
+      axios.get('https://api-web.nhle.com/v1/skater-stats-leaders/20242025/2?categories=assists&limit=5'),
+      axios.get('https://api-web.nhle.com/v1/skater-stats-leaders/20242025/2?categories=points&limit=5'),
+      axios.get('https://api-web.nhle.com/v1/skater-stats-leaders/20242025/2?categories=plusMinus&limit=5')
+    ]);
+    const fullStats = Object.assign(goalsData.data, assistsData.data, pointsData.data, plusMinusData.data)
+    res.json(fullStats)
+  } catch (error) {
+    console.error('Error fetching stats:', error.message);
+    res.status(500).json({ error: 'Failed to fetch stats' });
   }
 })
 
@@ -83,7 +98,8 @@ app.get('/api/news', async (req, res) => {
     console.error('Error fetching news:', error.message);
     res.status(500).json({ error: 'Failed to fetch news' });
   }
-})
+});
+
 
 app.get('/api/ping', (req, res) => {
   res.json({ message: 'Server is running' });
@@ -91,5 +107,4 @@ app.get('/api/ping', (req, res) => {
 
 app.listen(PORT,'0.0.0.0', () => {
   console.log(`🚀 Сервер запущен на http://localhost:${PORT}`);
-  console.log(`🔗 Пример: http://localhost:${PORT}/api/teams`);
 });
