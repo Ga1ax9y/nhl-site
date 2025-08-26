@@ -36,13 +36,11 @@ app.get('/api/standings', async (req, res) => {
 
 app.get('/api/stats', async (req, res) => {
   try{
-    const [goalsData, assistsData, pointsData, plusMinusData] = await Promise.all([
-      axios.get('https://api-web.nhle.com/v1/skater-stats-leaders/20242025/2?categories=goals&limit=5'),
-      axios.get('https://api-web.nhle.com/v1/skater-stats-leaders/20242025/2?categories=assists&limit=5'),
-      axios.get('https://api-web.nhle.com/v1/skater-stats-leaders/20242025/2?categories=points&limit=5'),
-      axios.get('https://api-web.nhle.com/v1/skater-stats-leaders/20242025/2?categories=plusMinus&limit=5')
+    const [skaterData, goalieData] = await Promise.all([
+      axios.get('https://api-web.nhle.com/v1/skater-stats-leaders/20242025/2'),
+      axios.get('https://api-web.nhle.com/v1/goalie-stats-leaders/20242025/2')
     ]);
-    const fullStats = Object.assign(goalsData.data, assistsData.data, pointsData.data, plusMinusData.data)
+    const fullStats = Object.assign(skaterData.data, goalieData.data)
     res.json(fullStats)
   } catch (error) {
     console.error('Error fetching stats:', error.message);
