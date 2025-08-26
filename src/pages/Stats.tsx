@@ -1,19 +1,25 @@
 import { useEffect, useState } from "react";
 import { fetchStats } from "../services/nhlApi";
-import type { IPlayer, ISkater } from "../types/player";
+import type { IGoalie, IPlayer, ISkater } from "../types/player";
 import type { IStats } from "../types/stats";
+import { useNavigate } from "react-router-dom";
 
-type StatsCategory = 'points' | 'goals' | 'assists' | 'plusMinus';
-
+type SkaterStatsCategory = 'points' | 'goals' | 'assists' | 'plusMinus' | 'savePctg' | 'shutouts' | 'wins' | 'goalsAgainstAverage';
+type GoalieStatsCategory = 'savePctg' | 'shutouts' | 'wins' | 'goalsAgainstAverage';
+type StatsCategory = SkaterStatsCategory | GoalieStatsCategory;
 export default function Stats() {
   const [stats, setStats] = useState<IStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [category, setCategory] = useState<StatsCategory>('points');
+  const [skaterCategory, setSkaterCategory] = useState<SkaterStatsCategory>('points');
+  const [goalieCategory, setGoalieCategory] = useState<SkaterStatsCategory>('savePctg');
+
+  const navigate = useNavigate();
 
   document.title = 'NHL | Stats';
 
   useEffect(() => {
+
     const loadStats = async () => {
       try {
         setLoading(true);
@@ -30,33 +36,64 @@ export default function Stats() {
     loadStats();
   }, []);
 
-  const getCurrentStats = (): IPlayer[] => {
+  const getCurrentStatsSkaters = (): IPlayer[] => {
     if (!stats) return [];
-    switch (category) {
+    switch (skaterCategory) {
       case 'points': return stats.points;
       case 'goals': return stats.goals;
       case 'assists': return stats.assists;
       case 'plusMinus': return stats.plusMinus;
+
       default: return [];
     }
   };
 
-  const getCategoryLabel = () => {
-    switch (category) {
+  const getCurrentStatsGoalies = (): IPlayer[] => {
+    if (!stats) return [];
+    switch (goalieCategory) {
+      case 'savePctg': return stats.savePctg;
+      case 'goalsAgainstAverage': return stats.goalsAgainstAverage;
+      case 'shutouts': return stats.shutouts;
+      case 'wins': return stats.wins;
+      default: return [];
+    }
+  };
+
+  const getSkaterCategoryLabel = () => {
+    switch (skaterCategory) {
       case 'points': return 'points';
       case 'goals': return 'goals';
       case 'assists': return 'assists';
       case 'plusMinus': return '+/-';
+    }
+  };
+
+  const getGoalieCategoryLabel = () => {
+    switch (goalieCategory) {
+      case 'savePctg': return 'SV %';
+      case 'goalsAgainstAverage': return 'GAA';
+      case 'shutouts': return 'shutouts';
+      case 'wins': return 'wins';
       default: return '';
     }
   };
 
-  const getStatValue = (player: IPlayer) => {
-    switch (category) {
+  const getStatValueSkater = (player: IPlayer) => {
+    switch (skaterCategory) {
       case 'points': return (player as ISkater).value || 0;
       case 'goals': return (player as ISkater).value || 0;
       case 'assists': return (player as ISkater).value || 0;
       case 'plusMinus': return (player as ISkater).value || 0;
+      default: return 0;
+    }
+  };
+
+  const getStatValueGoalie = (player: IPlayer) => {
+    switch (goalieCategory) {
+      case 'savePctg': return (player as IGoalie).value * 100 || 0;
+      case 'goalsAgainstAverage': return (player as IGoalie).value || 0;
+      case 'shutouts': return (player as IGoalie).value || 0;
+      case 'wins': return (player as IGoalie).value || 0;
       default: return 0;
     }
   };
@@ -92,8 +129,10 @@ export default function Stats() {
     );
   }
 
-  const currentStats = getCurrentStats();
+  const currentStatsSkaters = getCurrentStatsSkaters();
+  const currentStatsGoalies = getCurrentStatsGoalies();
 
+  // TODO: move to separate component
   return (
     <section className="stats container">
       <h1 className="stats__title">Skater stats</h1>
@@ -102,9 +141,9 @@ export default function Stats() {
             <button
                 key={ctg}
                 className={`controls__button ${
-                category === ctg ? "controls__button--active" : ""
+                skaterCategory === ctg ? "controls__button--active" : ""
                 }`}
-                onClick={() => setCategory(ctg as StatsCategory)}
+                onClick={() => setSkaterCategory(ctg as StatsCategory)}
                 type="button"
             >
                 {ctg === "plusMinus" ? "+/-" : ctg.charAt(0).toUpperCase() + ctg.slice(1)}
@@ -119,12 +158,12 @@ export default function Stats() {
                 <th className="stats__header-cell">#</th>
                 <th className="stats__header-cell">Skater</th>
                 <th className="stats__header-cell">Team</th>
-                <th className="stats__header-cell">{getCategoryLabel()}</th>
+                <th className="stats__header-cell">{getSkaterCategoryLabel()}</th>
                 </tr>
             </thead>
             <tbody>
-                {currentStats.map((player, index) => (
-                <tr key={`${category}-${player.id}-${index}`} className="stats__row">
+                {currentStatsSkaters.map((player, index) => (
+                <tr key={`${skaterCategory}-${player.id}-${index}`} className="stats__row" onClick={() => navigate(`/player/${player.id}`)}>
                     <td className="stats__cell stats__cell--rank">{index + 1}</td>
                     <td className="stats__cell stats__cell--player">
                     <div className="stats__player-info">
@@ -150,7 +189,72 @@ export default function Stats() {
                     </td>
                     <td className="stats__cell stats__cell--stat">
                     <p className="stats__stat-value stats__stat-value--points">
-                        {getStatValue(player)}
+                        {getStatValueSkater(player)}
+                    </p>
+                    </td>
+                </tr>
+                ))}
+            </tbody>
+            </table>
+        </div>
+        </div>
+        <h1 className="stats__title">Goalie stats</h1>
+        <div className="stats__controls controls">
+            {["savePctg", "goalsAgainstAverage", "shutouts", "wins"].map(ctg => (
+            <button
+                key={ctg}
+                className={`controls__button ${
+                goalieCategory === ctg ? "controls__button--active" : ""
+                }`}
+                onClick={() => setGoalieCategory(ctg as StatsCategory)}
+                type="button"
+            >
+                {ctg === "savePctg" ? "save %" : ctg === "goalsAgainstAverage" ? "GAA" : ctg.charAt(0).toUpperCase() + ctg.slice(1)}
+            </button>
+            ))}
+        </div>
+        <div className="stats__content">
+        <div className="stats__table-container">
+            <table className="stats__table">
+            <thead>
+                <tr className="stats__header">
+                <th className="stats__header-cell">#</th>
+                <th className="stats__header-cell">Goalie</th>
+                <th className="stats__header-cell">Team</th>
+                <th className="stats__header-cell">{getGoalieCategoryLabel()}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {currentStatsGoalies.map((player, index) => (
+                <tr key={`${goalieCategory}-${player.id}-${index}`} className="stats__row" onClick={() => navigate(`/player/${player.id}`)}>
+                    <td className="stats__cell stats__cell--rank">{index + 1}</td>
+                    <td className="stats__cell stats__cell--player">
+                    <div className="stats__player-info">
+                        <img
+                        src={player.headshot}
+                        alt={`${player.firstName.default} ${player.lastName.default}`}
+                        className="stats__player-logo"
+                        />
+                        <h2 className="stats__player-title">
+                        {player.firstName.default} {player.lastName.default}
+                        </h2>
+                    </div>
+                    </td>
+                    <td className="stats__cell stats__cell--team">
+                    <div className="stats__team-info">
+                        <img
+                        src={player.teamLogo}
+                        alt="team logo"
+                        className="stats__team-logo"
+                        />
+                        <span className="stats__team-name">{player.currentTeamAbbrev}</span>
+                    </div>
+                    </td>
+                    <td className="stats__cell stats__cell--stat">
+                    <p className="stats__stat-value stats__stat-value--points">
+                        { goalieCategory === "savePctg" || goalieCategory === "goalsAgainstAverage" ?
+                        getStatValueGoalie(player).toFixed(2) :
+                        getStatValueGoalie(player)}
                     </p>
                     </td>
                 </tr>
