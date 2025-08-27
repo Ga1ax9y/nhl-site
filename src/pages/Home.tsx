@@ -17,7 +17,7 @@ export default function Home() {
         setNews(data)
       }
       catch(err){
-        setError('Ошибка загрузки новостей')
+        setError('Error loading news')
         console.error(err)
       }
       finally{

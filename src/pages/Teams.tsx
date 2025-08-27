@@ -6,7 +6,7 @@ import TeamCard from "../components/features/TeamCard";
 export default function Teams() {
     const [teams, setTeams] = useState<ITeam[]>([])
     const [loading, setLoading] = useState(true);
-    const [, setError] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
     document.title = 'NHL | Teams'
     useEffect(() => {
         const loadTeams = async () =>{
@@ -15,7 +15,7 @@ export default function Teams() {
             setTeams(data)
           }
           catch(err){
-            setError('Ошибка загрузки команд')
+            setError('Error loading teams')
             console.error(err)
           }
           finally{
@@ -34,6 +34,7 @@ export default function Teams() {
         </section>
       )
     }
+    if (error) return <div className="error-message container">{error}</div>
   return (
     <section className="teams container">
         <h1 className="teams__title">Teams</h1>

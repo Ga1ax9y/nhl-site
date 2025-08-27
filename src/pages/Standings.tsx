@@ -7,7 +7,7 @@ type StandingsView = 'wildcard' | 'conference' | 'division' | 'league'
 export default function Standings() {
   const [standings, setStandings] = useState<ITeam[]>([])
   const [loading, setLoading] = useState(true);
-  const [, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [currentView, setCurrentView] = useState<StandingsView>('conference')
 
   document.title = 'NHL | Standings'
@@ -19,7 +19,7 @@ export default function Standings() {
         setStandings(data)
       }
       catch (err) {
-        setError('Ошибка загрузки команд')
+        setError('Error loading standings')
         console.error(err)
       }
       finally {
@@ -54,6 +54,8 @@ export default function Standings() {
       </section>
     );
   }
+
+  if (error) return <div className="error-message container">{error}</div>
   const getWildcardTeams = (conference: string) => {
     const conferenceTeams = standings.filter((team) => team.conferenceName === conference);
     const top3Map: Record<string, number> = {};

@@ -1,6 +1,6 @@
 .standings{
-    padding: 2rem var(--container-padding-x);
 
+    padding: 2rem var(--container-padding-x);
     &__title{
       font-family: var(--font-family-alternate);
       color: var(--color-dark);
@@ -182,8 +182,6 @@
 @media (max-width: 480px) {
 
   .standings {
-    padding: 32px 8px;
-
     &__row {
       grid-template-columns: 35px 1fr 30px 30px 30px 30px;
 
@@ -215,6 +213,6 @@
 @media (max-width: 380px) {
 
   .standings {
-    padding: 32px 4px;
+    padding-inline: 4px;
   }
 }

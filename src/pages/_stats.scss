@@ -112,7 +112,6 @@
     &-title {
       font-weight: 600;
       color: var(--color-dark);
-      margin: 0;
       font-size: 16px;
     }
   }
@@ -141,7 +140,6 @@
     &-value {
       text-align: center;
       font-weight: 500;
-      margin: 0;
       font-size: 0.95rem;
       color: var(--color-dark);
       font-weight: 700;
@@ -161,22 +159,15 @@
     gap: 1rem;
   }
 
-  &__error {
-    text-align: center;
-    padding: 2rem;
-    color: #d32f2f;
-    background-color: rgba(211, 47, 47, 0.1);
-    border-radius: 8px;
-    margin: 2rem 0;
-  }
-
   &__table-wrapper {
+    text-align: center;
     position: relative;
     margin-bottom: 3rem;
+    margin-inline: 1.5rem;
   }
 
   &__button {
-    display: block;
+    display: inline-block;
     padding: 0.6rem 1.4rem;
     justify-self: center;
     background-color: var(--color-dark);

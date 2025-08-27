@@ -102,7 +102,7 @@ export default function Stats() {
     switch (goalieCategory) {
       case 'savePctg': return 'SV %';
       case 'goalsAgainstAverage': return 'GAA';
-      case 'shutouts': return 'shutouts';
+      case 'shutouts': return 'SO';
       case 'wins': return 'wins';
       default: return '';
     }
@@ -142,7 +142,7 @@ export default function Stats() {
   if (error) {
     return (
       <section className="stats container">
-        <div className="stats__error">
+        <div className="error-message">
           <p>{error}</p>
         </div>
       </section>
