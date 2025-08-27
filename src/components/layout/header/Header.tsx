@@ -34,13 +34,16 @@ export default function Header(){
                 <nav className="header__nav-desktop">
                     <ul className="header__nav-list">
                         <li>
+                            <Link className="header__nav-link" to="/">Home</Link>
+                        </li>
+                        <li>
                             <Link className="header__nav-link" to="/schedule">Schedule</Link>
                         </li>
                         <li>
                             <Link className="header__nav-link" to="/standings">Standings</Link>
                         </li>
                         <li>
-                            <Link className="header__nav-link" to="/stats">Stats</Link>
+                            <Link className="header__nav-link" to="/teams">Teams</Link>
                         </li>
                         <li>
                             <Link className="header__nav-link" to="/stats">Stats</Link>

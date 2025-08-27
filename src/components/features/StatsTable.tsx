@@ -55,9 +55,6 @@ export default function StatsTable({
                       src={player.headshot}
                       alt={getPlayerName(player)}
                       className="stats__player-logo"
-                      onError={(e) => {
-                        e.currentTarget.src = '/images/default-player.png';
-                      }}
                     />
                     <h2 className="stats__player-title">
                       {getPlayerName(player)}
@@ -70,9 +67,6 @@ export default function StatsTable({
                       src={player.teamLogo}
                       alt="team logo"
                       className="stats__team-logo"
-                      onError={(e) => {
-                        e.currentTarget.src = '/images/default-team.png';
-                      }}
                     />
                     <span className="stats__team-name">{player.currentTeamAbbrev}</span>
                   </div>

@@ -23,8 +23,11 @@
     text-decoration: none;
 
     &:active {
-      background-color: var(--color-dark-hover);
       transform: translateY(-2px);
       transform: translateY(0);
+    }
+
+    &:hover {
+      background-color: var(--color-dark-alternate);
     }
 }

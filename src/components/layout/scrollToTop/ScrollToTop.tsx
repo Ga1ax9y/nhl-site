@@ -1,27 +1,59 @@
 import { useState, useEffect } from 'react';
 
-export default function ScrollToTop() {
+type ScrollToTopProps = {
+  container?: React.RefObject<HTMLElement>;
+};
+
+export default function ScrollToTop({ container }: ScrollToTopProps) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const toggleVisibility = () => {
-      if (window.pageYOffset > 600) {
+    const scrollContainer = container?.current;
+    const handleScroll = () => {
+      let scrollPosition = 0;
+
+      if (container?.current) {
+        scrollPosition = container.current.scrollTop;
+      } else {
+        scrollPosition = window.scrollY || window.pageYOffset;
+      }
+
+      if (scrollPosition > 600) {
         setIsVisible(true);
       } else {
         setIsVisible(false);
       }
     };
 
-    window.addEventListener('scroll', toggleVisibility);
+    if (scrollContainer) {
+      scrollContainer.addEventListener('scroll', handleScroll);
+    } else {
+      window.addEventListener('scroll', handleScroll);
+    }
 
-    return () => window.removeEventListener('scroll', toggleVisibility);
-  }, []);
+    handleScroll();
+
+    return () => {
+      if (scrollContainer) {
+        scrollContainer.removeEventListener('scroll', handleScroll);
+      } else {
+        window.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, [container]);
 
   const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
+    if (container?.current) {
+      container.current.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    } else {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    }
   };
 
   return (

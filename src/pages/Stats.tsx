@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { fetchStats } from "../services/nhlApi";
 import type { IGoalie, IPlayer, ISkater } from "../types/player";
 import type { IStats } from "../types/stats";
 import StatsControls from "../components/features/Controls";
 import type { StatsCategory} from "../types/statsCategory";
 import StatsTable from "../components/features/StatsTable";
+import ScrollToTop from "../components/layout/scrollToTop/ScrollToTop";
 
 export default function Stats() {
   const [stats, setStats] = useState<IStats | null>(null);
@@ -12,9 +13,39 @@ export default function Stats() {
   const [error, setError] = useState('');
   const [skaterCategory, setSkaterCategory] = useState<StatsCategory>('points');
   const [goalieCategory, setGoalieCategory] = useState<StatsCategory>('savePctg');
+  const modalContainerRef = useRef<HTMLDivElement>(null);
+  const bodyScrollPositionRef = useRef(0);
+
+  const [showModal, setShowModal] = useState(false);
+  const [modalType, setModalType] = useState<'skater' | 'goalie'>('skater');
 
 
   document.title = 'NHL | Stats';
+
+  useEffect(() => {
+    if (showModal) {
+      bodyScrollPositionRef.current = window.scrollY;
+
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${bodyScrollPositionRef.current}px`;
+      document.body.style.width = '100%';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+
+      window.scrollTo(0, bodyScrollPositionRef.current);
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+    };
+  }, [showModal]);
 
   useEffect(() => {
 
@@ -128,8 +159,20 @@ export default function Stats() {
     );
   }
 
-  const currentStatsSkaters = getCurrentStatsSkaters();
-  const currentStatsGoalies = getCurrentStatsGoalies();
+  const allSkaters = getCurrentStatsSkaters();
+  const top5Skaters = allSkaters.slice(0, 5);
+  const skatersForModal = allSkaters.slice(0, 51);
+
+  const allGoalies = getCurrentStatsGoalies();
+  const top5Goalies = allGoalies.slice(0, 5);
+  const goaliesForModal = allGoalies.slice(0, 51);
+
+  const openModal = (type: 'skater' | 'goalie') => {
+    setModalType(type);
+    setShowModal(true);
+  };
+
+  const closeModal = () => setShowModal(false);
 
   return (
     <section className="stats container">
@@ -139,27 +182,73 @@ export default function Stats() {
           setCategory={setSkaterCategory}
           type="skater"
         />
-        <StatsTable
-          players={currentStatsSkaters}
-          category={skaterCategory}
-          categoryLabel={getSkaterCategoryLabel()}
-          getStatValue={getStatValueSkater}
-          type="skater"
-        />
+        <div className="stats__table-wrapper">
+          <StatsTable
+            players={top5Skaters}
+            category={skaterCategory}
+            categoryLabel={getSkaterCategoryLabel()}
+            getStatValue={getStatValueSkater}
+            type="skater"
+          />
+          <button
+            className="stats__button"
+            onClick={() => openModal('skater')}
+            aria-label="Show more skater stats"
+            type="button"
+          >
+            See more
+          </button>
+        </div>
+
         <h1 className="stats__title">Goalie stats</h1>
         <StatsControls
           category={goalieCategory}
           setCategory={setGoalieCategory}
           type="goalie"
         />
-        <StatsTable
-          players={currentStatsGoalies}
-          category={goalieCategory}
-          categoryLabel={getGoalieCategoryLabel()}
-          getStatValue={getStatValueGoalie}
-          showDecimal={goalieCategory === "savePctg" || goalieCategory === "goalsAgainstAverage"}
-          type="goalie"
-        />
+        <div className="stats__table-wrapper">
+          <StatsTable
+            players={top5Goalies}
+            category={goalieCategory}
+            categoryLabel={getGoalieCategoryLabel()}
+            getStatValue={getStatValueGoalie}
+            showDecimal={goalieCategory === "savePctg" || goalieCategory === "goalsAgainstAverage"}
+            type="goalie"
+          />
+          <button
+            className="stats__button"
+            onClick={() => openModal('goalie')}
+            aria-label="Show more goalie stats"
+            type="button"
+          >
+            See more
+          </button>
+        </div>
+
+        {showModal && (
+        <div className="stats__modal-overlay" onClick={closeModal}>
+          <div className="stats__modal" onClick={(e) => e.stopPropagation()} ref={modalContainerRef }>
+            <button className="stats__modal-close" onClick={closeModal} aria-label="Close modal">
+              ×
+            </button>
+            <h2 className="stats__modal-title">
+              {modalType === 'skater' ? 'Skater stats' : 'Goalie stats'} (1–50)
+            </h2>
+            <StatsTable
+              players={modalType === 'skater' ? skatersForModal : goaliesForModal}
+              category={modalType === 'skater' ? skaterCategory : goalieCategory}
+              categoryLabel={modalType === 'skater' ? getSkaterCategoryLabel() : getGoalieCategoryLabel()}
+              getStatValue={modalType === 'skater' ? getStatValueSkater : getStatValueGoalie}
+              showDecimal={
+                modalType === 'goalie' &&
+                (goalieCategory === 'savePctg' || goalieCategory === 'goalsAgainstAverage')
+              }
+              type={modalType}
+            />
+            <ScrollToTop container={modalContainerRef as React.RefObject<HTMLElement>} />
+          </div>
+        </div>
+      )}
     </section>
   );
 }
