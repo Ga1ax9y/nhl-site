@@ -3,16 +3,15 @@ import { fetchStats } from "../services/nhlApi";
 import type { IGoalie, IPlayer, ISkater } from "../types/player";
 import type { IStats } from "../types/stats";
 import { useNavigate } from "react-router-dom";
+import StatsControls from "../components/features/Controls";
+import type { StatsCategory} from "../types/statsCategory";
 
-type SkaterStatsCategory = 'points' | 'goals' | 'assists' | 'plusMinus' | 'savePctg' | 'shutouts' | 'wins' | 'goalsAgainstAverage';
-type GoalieStatsCategory = 'savePctg' | 'shutouts' | 'wins' | 'goalsAgainstAverage';
-type StatsCategory = SkaterStatsCategory | GoalieStatsCategory;
 export default function Stats() {
   const [stats, setStats] = useState<IStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [skaterCategory, setSkaterCategory] = useState<SkaterStatsCategory>('points');
-  const [goalieCategory, setGoalieCategory] = useState<SkaterStatsCategory>('savePctg');
+  const [skaterCategory, setSkaterCategory] = useState<StatsCategory>('points');
+  const [goalieCategory, setGoalieCategory] = useState<StatsCategory>('savePctg');
 
   const navigate = useNavigate();
 
@@ -136,20 +135,11 @@ export default function Stats() {
   return (
     <section className="stats container">
       <h1 className="stats__title">Skater stats</h1>
-        <div className="stats__controls controls">
-            {["points", "goals", "assists", "plusMinus"].map(ctg => (
-            <button
-                key={ctg}
-                className={`controls__button ${
-                skaterCategory === ctg ? "controls__button--active" : ""
-                }`}
-                onClick={() => setSkaterCategory(ctg as StatsCategory)}
-                type="button"
-            >
-                {ctg === "plusMinus" ? "+/-" : ctg.charAt(0).toUpperCase() + ctg.slice(1)}
-            </button>
-            ))}
-        </div>
+        <StatsControls
+          category={skaterCategory}
+          setCategory={setSkaterCategory}
+          type="skater"
+        />
         <div className="stats__content">
         <div className="stats__table-container">
             <table className="stats__table">
@@ -199,20 +189,11 @@ export default function Stats() {
         </div>
         </div>
         <h1 className="stats__title">Goalie stats</h1>
-        <div className="stats__controls controls">
-            {["savePctg", "goalsAgainstAverage", "shutouts", "wins"].map(ctg => (
-            <button
-                key={ctg}
-                className={`controls__button ${
-                goalieCategory === ctg ? "controls__button--active" : ""
-                }`}
-                onClick={() => setGoalieCategory(ctg as StatsCategory)}
-                type="button"
-            >
-                {ctg === "savePctg" ? "save %" : ctg === "goalsAgainstAverage" ? "GAA" : ctg.charAt(0).toUpperCase() + ctg.slice(1)}
-            </button>
-            ))}
-        </div>
+        <StatsControls
+          category={goalieCategory}
+          setCategory={setGoalieCategory}
+          type="goalie"
+        />
         <div className="stats__content">
         <div className="stats__table-container">
             <table className="stats__table">
