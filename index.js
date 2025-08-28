@@ -24,9 +24,10 @@ app.get('/api/teams', async (req, res) => {
   }
 });
 
-app.get('/api/standings', async (req, res) => {
+app.get('/api/standings/:season', async (req, res) => {
   try{
-    const response = await axios.get('https://api-web.nhle.com/v1/standings/now')
+    let { season } = req.params || 'now'
+    const response = await axios.get(`https://api-web.nhle.com/v1/standings/${season}`)
     res.json(response.data)
   } catch (error) {
     console.error('Error fetching standings:', error.message);
@@ -34,11 +35,24 @@ app.get('/api/standings', async (req, res) => {
   }
 })
 
-app.get('/api/stats', async (req, res) => {
+app.get('/api/standings-season', async (req, res) => {
   try{
+    const response = await axios.get('https://api-web.nhle.com/v1/standings-season')
+    res.json(response.data)
+  } catch (error) {
+    console.error('Error fetching standings:', error.message);
+    res.status(500).json({ error: 'Failed to fetch standings' });
+  }
+})
+
+app.get('/api/stats/:season', async (req, res) => {
+  try{
+    let { season } = req.params
+    if (season !== 'current') season = `${season}/2`
+
     const [skaterData, goalieData] = await Promise.all([
-      axios.get('https://api-web.nhle.com/v1/skater-stats-leaders/20242025/2'),
-      axios.get('https://api-web.nhle.com/v1/goalie-stats-leaders/20242025/2')
+      axios.get(`https://api-web.nhle.com/v1/skater-stats-leaders/${season}?limit=50`),
+      axios.get(`https://api-web.nhle.com/v1/goalie-stats-leaders/${season}?limit=50`)
     ]);
     const fullStats = Object.assign(skaterData.data, goalieData.data)
     res.json(fullStats)
