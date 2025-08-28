@@ -1,6 +1,7 @@
 interface IPlayerBase{
     id: number,
     headshot: string,
+    isActive: boolean,
     firstName: {
         default: string
     },

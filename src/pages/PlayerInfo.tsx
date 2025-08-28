@@ -79,6 +79,7 @@ export default function PlayerInfo() {
                     <div className="player__meta">
                         <span className="player__jersey">#{player.sweaterNumber}</span>
                         <span className="player__position">{player.positionCode}</span>
+                        {player.isActive && (
                         <span className="player__team">
                             <img
                                 src={player.teamLogo}
@@ -87,6 +88,17 @@ export default function PlayerInfo() {
                             />
                             {player.currentTeamAbbrev}
                         </span>
+                        )}
+                        {!player.isActive && (
+                        <span className="player__team">
+                            <img
+                                src='/nhl-logo.png'
+                                alt="inactive player"
+                                className="player__team-logo"
+                            />
+                            {player.currentTeamAbbrev}
+                        </span>
+                        )}
                     </div>
                 </div>
             </div>
@@ -115,7 +127,7 @@ export default function PlayerInfo() {
                 </div>
             </div>
 
-            {player.featuredStats && (
+            {player.featuredStats && player.isActive &&  (
             <>
             <div className="player__stats">
                 <h2 className="player__stats-title">Regular Season</h2>
@@ -124,7 +136,7 @@ export default function PlayerInfo() {
                         <span className="player__stat-label">Games</span>
                             <span className="player__stat-value">{player.featuredStats.regularSeason.subSeason.gamesPlayed || 0}</span>
                     </div>
-                {player.position !== 'G' && (
+                {player.position !== 'G' && player.isActive &&(
                 <>
                     <div className="player__stat-card">
                         <span className="player__stat-label">Goals</span>
@@ -269,6 +281,62 @@ export default function PlayerInfo() {
                 </div>
             </div>
             </>
+            )}
+            { !player.isActive && (
+                <>
+                    <div className="player__stats">
+                    <h2 className="player__stats-title">Career</h2>
+                    <div className="player__stats-grid">
+                        {player.featuredStats && (
+                        <div className="player__stat-card">
+                            <span className="player__stat-label">Games</span>
+                                <span className="player__stat-value">{player.featuredStats.regularSeason.career.gamesPlayed || 0}</span>
+                        </div>
+                        )}
+                    {player.position !== 'G' &&(
+                    <>
+                        <div className="player__stat-card">
+                            <span className="player__stat-label">Goals</span>
+                            <span className="player__stat-value">{(player as ISkater).featuredStats.regularSeason.career.goals || 0}</span>
+                        </div>
+                        <div className="player__stat-card">
+                            <span className="player__stat-label">Assists</span>
+                            <span className="player__stat-value">{(player as ISkater).featuredStats.regularSeason.career.assists || 0}</span>
+                        </div>
+                        <div className="player__stat-card">
+                            <span className="player__stat-label">Points</span>
+                            <span className="player__stat-value">{(player as ISkater).featuredStats.regularSeason.career.points || 0}</span>
+                        </div>
+                        <div className="player__stat-card">
+                            <span className="player__stat-label">+/-</span>
+                            <span className="player__stat-value">{(player as ISkater).featuredStats.regularSeason.career.plusMinus || 0}</span>
+                        </div>
+                    </>
+                    )}
+                    {player.position === 'G' && (
+                    <>
+                        <div className="player__stat-card">
+                            <span className="player__stat-label">Save %</span>
+                            <span className="player__stat-value">
+                                {((player as IGoalie).featuredStats.regularSeason.career.savePctg * 100).toFixed(2) || 0}</span>
+                                </div>
+                        <div className="player__stat-card">
+                            <span className="player__stat-label">Shutouts</span>
+                            <span className="player__stat-value">{(player as IGoalie).featuredStats.regularSeason.career.shutouts || 0}</span>
+                        </div>
+                        <div className="player__stat-card">
+                            <span className="player__stat-label">GAA</span>
+                            <span className="player__stat-value">{((player as IGoalie).featuredStats.regularSeason.career.goalsAgainstAvg).toFixed(2) || 0}</span>
+                        </div>
+                        <div className="player__stat-card">
+                            <span className="player__stat-label">Wins</span>
+                            <span className="player__stat-value">{(player as IGoalie).featuredStats.regularSeason.career.wins || 0}</span>
+                        </div>
+                    </>
+                    )}
+                    </div>
+                </div>
+                </>
             )}
         </section>
     );

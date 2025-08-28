@@ -44,7 +44,8 @@ export const fetchNews = async (): Promise<INews[]> => {
     return response.data.items
 }
 
-export const fetchStats = async (): Promise<IStats> =>{
-    const response = await nhlApi.get("stats")
+export const fetchStats = async (season?: ISeason): Promise<IStats> =>{
+    const seasonId: number | string = season?.id || "current";
+    const response = await nhlApi.get(`stats/${seasonId}`)
     return response.data
 }

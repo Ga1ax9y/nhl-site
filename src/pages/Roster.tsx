@@ -20,7 +20,7 @@ export default function Roster() {
         const data: IPlayer[] = await fetchRoster(teamAbbrev);
         setRoster(data);
       } catch (err) {
-        setError('Не удалось загрузить состав команды');
+        setError('Error loading roster');
         console.error(err);
       } finally {
         setLoading(false);
@@ -40,7 +40,7 @@ export default function Roster() {
         </section>
       )
     }
-  if (error) return <div>{error}</div>;
+  if (error) return <div className="error-message">{error}</div>;
 
   return (
     <section className="roster container">
