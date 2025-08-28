@@ -43,7 +43,7 @@ const router = createBrowserRouter([
         element: <Schedule />,
       },
       {
-        path: '/standings',
+        path: '/standings/:season',
         element: <Standings />,
       },
       {

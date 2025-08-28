@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { fetchStats } from "../services/nhlApi";
 import type { IGoalie, IPlayer, ISkater } from "../types/player";
 import type { IStats } from "../types/stats";
-import StatsControls from "../components/features/Controls";
 import type { StatsCategory} from "../types/statsCategory";
 import StatsTable from "../components/features/StatsTable";
 import ScrollToTop from "../components/layout/scrollToTop/ScrollToTop";
+import Controls from "../components/features/Controls";
 
 export default function Stats() {
   const [stats, setStats] = useState<IStats | null>(null);
@@ -177,7 +177,7 @@ export default function Stats() {
   return (
     <section className="stats container">
       <h1 className="stats__title">Skater stats</h1>
-        <StatsControls
+        <Controls<StatsCategory>
           category={skaterCategory}
           setCategory={setSkaterCategory}
           type="skater"
@@ -201,9 +201,9 @@ export default function Stats() {
         </div>
 
         <h1 className="stats__title">Goalie stats</h1>
-        <StatsControls
+        <Controls<StatsCategory>
           category={goalieCategory}
-          setCategory={setGoalieCategory}
+          setCategory={setGoalieCategory }
           type="goalie"
         />
         <div className="stats__table-wrapper">

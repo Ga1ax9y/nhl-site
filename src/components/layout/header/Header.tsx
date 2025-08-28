@@ -40,7 +40,7 @@ export default function Header(){
                             <Link className="header__nav-link" to="/schedule">Schedule</Link>
                         </li>
                         <li>
-                            <Link className="header__nav-link" to="/standings">Standings</Link>
+                            <Link className="header__nav-link" to="/standings/now">Standings</Link>
                         </li>
                         <li>
                             <Link className="header__nav-link" to="/teams">Teams</Link>
@@ -60,7 +60,7 @@ export default function Header(){
                                     </Link>
                                 </li>
                                 <li className="header__overlay-item">
-                                    <Link className="header__overlay-link" to="/standings" onClick={toggleMenu}>
+                                    <Link className="header__overlay-link" to="/standings/now" onClick={toggleMenu}>
                                         Standings
                                     </Link>
                                 </li>

@@ -1,6 +1,6 @@
 .standings{
-
     padding: 2rem var(--container-padding-x);
+
     &__title{
       font-family: var(--font-family-alternate);
       color: var(--color-dark);
@@ -22,15 +22,63 @@
       }
 
     }
+    &__season {
+      &-selector {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        margin-bottom: 1rem;
 
-    &__table {
-        width: 100%;
-        border-collapse: collapse;
-        background-color: var(--color-light);
-        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
-        border-radius: 8px;
-        overflow: hidden;
-        margin-bottom: 2rem;
+        &::after {
+          content: '';
+          position: absolute;
+          right: 1rem;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 0;
+          height: 0;
+          border-left: 6px solid transparent;
+          border-right: 6px solid transparent;
+          border-top: 6px solid var(--color-dark);
+          pointer-events: none;
+        }
+      }
+
+      &-dropdown {
+        padding: 0.8rem 2.5rem 0.8rem 1rem;
+        border: 2px solid var(--color-dark);
+        border-radius: 6px;
+        color: var(--color-dark);
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all var(--transition-duration);
+        appearance: none;
+        min-width: 140px;
+
+        &:hover {
+          border-color: var(--color-dark-hover);
+          background-color: var(--color-light-alternate);
+        }
+
+        option {
+          background-color: var(--color-light);
+          color: var(--color-dark);
+          padding: 0.5rem;
+          font-weight: 500;
+        }
+      }
+}
+
+  &__table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: var(--color-light);
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 2rem;
     }
 
     &__row {
