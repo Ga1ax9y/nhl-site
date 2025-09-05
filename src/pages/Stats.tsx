@@ -1,13 +1,19 @@
 import { useEffect, useRef, useState } from "react";
-import { fetchStats } from "../services/nhlApi";
+import { fetchSeasonById, fetchSeasons, fetchStats } from "../services/nhlApi";
 import type { IGoalie, IPlayer, ISkater } from "../types/player";
 import type { IStats } from "../types/stats";
 import type { StatsCategory} from "../types/statsCategory";
 import StatsTable from "../components/features/StatsTable";
 import ScrollToTop from "../components/layout/scrollToTop/ScrollToTop";
 import Controls from "../components/features/Controls";
+import { useNavigate, useParams } from "react-router-dom";
+import type { ISeason } from "../types/season";
+import SeasonSelector from "../components/features/Dropdown";
 
 export default function Stats() {
+  const { season } = useParams<{ season: string }>();
+  const navigate = useNavigate();
+  const [seasons, setSeasons] = useState<ISeason[]>([]);
   const [stats, setStats] = useState<IStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -21,6 +27,19 @@ export default function Stats() {
 
 
   document.title = 'NHL | Stats';
+
+  useEffect(() => {
+      const loadSeasons = async () => {
+        try {
+          const seasonsData = await fetchSeasons();
+          setSeasons(seasonsData);
+        } catch (err) {
+          console.error('Error loading seasons:', err);
+        }
+      };
+
+      loadSeasons();
+    }, []);
 
   useEffect(() => {
     if (showModal) {
@@ -52,7 +71,8 @@ export default function Stats() {
     const loadStats = async () => {
       try {
         setLoading(true);
-        const data = await fetchStats();
+        const currentSeason = await fetchSeasonById(season as string);
+        const data = await fetchStats(currentSeason);
         setStats(data);
       } catch (err) {
         setError('Error loading stats');
@@ -63,7 +83,7 @@ export default function Stats() {
     };
 
     loadStats();
-  }, []);
+  }, [season]);
 
   const getCurrentStatsSkaters = (): IPlayer[] => {
     if (!stats) return [];
@@ -128,6 +148,10 @@ export default function Stats() {
     }
   };
 
+  const handleSeasonChange = (seasonValue: string) => {
+    navigate(`/stats/${seasonValue}`);
+  };
+
   if (loading) {
     return (
       <section className="stats container">
@@ -181,7 +205,15 @@ export default function Stats() {
           category={skaterCategory}
           setCategory={setSkaterCategory}
           type="skater"
+          season={season || ''}
         />
+        <SeasonSelector
+          seasons={seasons}
+          selectedSeason={season || ''}
+          onSeasonChange={handleSeasonChange}
+          className="stats"
+
+                />
         <div className="stats__table-wrapper">
           <StatsTable
             players={top5Skaters}
@@ -205,6 +237,7 @@ export default function Stats() {
           category={goalieCategory}
           setCategory={setGoalieCategory }
           type="goalie"
+          season={season || ''}
         />
         <div className="stats__table-wrapper">
           <StatsTable

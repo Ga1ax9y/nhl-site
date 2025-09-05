@@ -6,7 +6,7 @@ import type { IStats } from '../types/stats';
 import type { ISeason } from '../types/season';
 
 // http://localhost:3000
-const API_BASE = "http://localhost:3000/api"
+const API_BASE = "http://172.20.10.2:3000/api"
 
 export const nhlApi = axios.create({
     baseURL: API_BASE
@@ -44,7 +44,8 @@ export const fetchNews = async (): Promise<INews[]> => {
     return response.data.items
 }
 
-export const fetchStats = async (): Promise<IStats> =>{
-    const response = await nhlApi.get("stats")
+export const fetchStats = async (season?: ISeason): Promise<IStats> =>{
+    const seasonId: number | string = season?.id || "current";
+    const response = await nhlApi.get(`stats/${seasonId}`)
     return response.data
 }
