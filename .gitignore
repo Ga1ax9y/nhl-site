@@ -1,0 +1,6 @@
+# opencode
+.agents/
+skills-lock.json
+
+# NHL API reference (не публикуем)
+nhl-api/API_DOCS.md
