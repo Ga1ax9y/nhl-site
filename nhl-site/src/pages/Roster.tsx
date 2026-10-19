@@ -1,0 +1,53 @@
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import type { IPlayer } from "../types/player";
+import { fetchRoster } from "../services/nhlApi";
+import PlayerCard from "../components/features/PlayerCard";
+import Loader from "../components/layout/loader/Loader";
+
+export default function Roster() {
+  const { teamAbbrev } = useParams<{ teamAbbrev: string }>();
+  const [roster, setRoster] = useState<IPlayer[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  document.title = `NHL | Team roster ${teamAbbrev}`
+
+  useEffect(() => {
+    const loadRoster = async () => {
+      try {
+        setLoading(true);
+        if (!teamAbbrev) return;
+        const data: IPlayer[] = await fetchRoster(teamAbbrev);
+        setRoster(data);
+      } catch (err) {
+        setError('Error loading roster');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadRoster();
+  }, [teamAbbrev]);
+
+    if (loading){
+      return (
+        <section className="roster container">
+          <Loader />
+        </section>
+      )
+    }
+  if (error) return <div className="error-message">{error}</div>;
+
+  return (
+    <section className="roster container">
+      <h2 className="page-title">Team roster: {teamAbbrev}</h2>
+      <ul className="roster__list">
+        {roster.map(player => (
+          <PlayerCard key={player.id} player={player} />
+        ))}
+      </ul>
+    </section>
+  );
+}

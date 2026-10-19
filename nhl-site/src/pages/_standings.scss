@@ -1,0 +1,266 @@
+.standings{
+    padding: 2rem var(--container-padding-x);
+
+    &__title{
+      font-family: var(--font-family-alternate);
+      color: var(--color-dark);
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      text-align: center;
+      position: relative;
+      padding-bottom: 0.5rem;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 2px;
+        background-color: var(--color-dark);
+      }
+
+    }
+    &__season {
+      &-selector {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        margin-bottom: 1rem;
+
+        &::after {
+          content: '';
+          position: absolute;
+          right: 1rem;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 0;
+          height: 0;
+          border-left: 6px solid transparent;
+          border-right: 6px solid transparent;
+          border-top: 6px solid var(--color-dark);
+          pointer-events: none;
+        }
+      }
+
+      &-dropdown {
+        padding: 0.8rem 2.5rem 0.8rem 1rem;
+        border: 2px solid var(--color-dark);
+        border-radius: 6px;
+        color: var(--color-dark);
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all var(--transition-duration);
+        appearance: none;
+        min-width: 140px;
+
+        &:hover {
+          border-color: var(--color-dark-hover);
+          background-color: var(--color-light);
+        }
+
+        option {
+          background-color: var(--color-light);
+          color: var(--color-dark);
+          padding: 0.5rem;
+          font-weight: 500;
+        }
+      }
+}
+
+  &__table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: var(--color-light);
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 1.25rem;
+    }
+
+    &__row {
+        display: grid;
+        grid-template-columns: 60px 1fr 80px 80px 80px 80px;
+        align-items: center;
+        padding: 6px 12px;
+        border-bottom: 1px solid var(--color-gray);
+        transition: background-color var(--transition-duration);
+
+
+        &-link{
+          text-decoration: none;
+        }
+
+        &:hover {
+            background-color: var(--color-light-alternate);
+            cursor: pointer;
+        }
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        &-cell {
+            &__logo {
+                width: 26px;
+                height: 28px;
+                object-fit: contain;
+            }
+
+            &__title {
+                font-weight: 600;
+                color: var(--color-dark);
+                margin: 0;
+                font-size: 0.9rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            &__stat {
+                text-align: center;
+                font-weight: 500;
+                margin: 0;
+                font-size: 0.95rem;
+                color: #0864f7;
+
+                &--points {
+                color: var(--color-dark);
+                font-weight: 700;
+                }
+
+                &--wins {
+                color: #008f48;
+                }
+
+                &--losses {
+                color: #e53935;
+                }
+            }
+        }
+    }
+}
+
+.table-header {
+  display: grid;
+  grid-template-columns: 60px 1fr 80px 80px 80px 80px;
+  padding: 8px 12px;
+  background-color: var(--color-dark-alternate);
+  color: var(--color-light);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.5px;
+
+  &__item {
+    text-align: center;
+
+    &:nth-child(2) {
+      text-align: left;
+    }
+  }
+}
+
+.playoff-cutline {
+  &__line {
+    height: 3px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--color-dark) 20%,
+      var(--color-dark) 80%,
+      transparent 100%
+    );
+    margin: -2.75px 0;
+    position: relative;
+
+    &::before {
+      content: 'Playoff Zone';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: var(--color-dark);
+      color: var(--color-light);
+      padding: 0.2rem 0.8rem;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+    .standings {
+        &__title {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        &__row {
+            grid-template-columns: 50px 1fr 40px 40px 40px 40px;
+        }
+
+    }
+    .table-header {
+        grid-template-columns: 50px 1fr 40px 40px 40px 40px;
+
+    &__item {
+      span.long-text {
+        display: none;
+      }
+
+      &::after {
+        content: attr(data-short);
+        display: inline-block;
+      }
+
+      &:nth-child(2)::after {
+        content: none;
+      }
+    }
+
+    }
+}
+
+@media (max-width: 480px) {
+
+  .standings {
+    &__row {
+      grid-template-columns: 35px 1fr 30px 30px 30px 30px;
+
+      &:nth-child(6) {
+        display: none;
+      }
+      &-cell__stat{
+        font-size: 0.95rem;
+      }
+    }
+  }
+
+
+  .table-header {
+    grid-template-columns: 35px 1fr 30px 30px 30px 30px;
+    padding: 6px 8px;
+  }
+
+  .standings__row{
+    padding: 6px 8px;
+  }
+  .standings__row__cell-logo{
+    width: 26px;
+    height: 28px;
+  }
+
+}
+
+@media (max-width: 380px) {
+
+  .standings {
+    padding-inline: 4px;
+  }
+}
