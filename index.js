@@ -9,7 +9,7 @@ const PORT = 3000;
 
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin: 'http://localhost:5173', // 172.20.10.2:5173
     methods: ['GET'],
   })
 );
@@ -112,6 +112,25 @@ app.get('/api/news', async (req, res) => {
   }
 });
 
+
+const getSchedule = async (req, res) => {
+  try {
+    let { date } = req.params;
+
+    if (date && date !== 'now' && !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      return res.status(400).json({ error: 'Invalid date format. Expected YYYY-MM-DD or "now"' });
+    }
+
+    const response = await axios.get(`https://api-web.nhle.com/v1/schedule/${date || 'now'}`);
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error fetching schedule:', error.message);
+    res.status(500).json({ error: 'Failed to fetch schedule' });
+  }
+};
+
+app.get('/api/schedule', getSchedule);
+app.get('/api/schedule/:date', getSchedule);
 
 app.get('/api/ping', (req, res) => {
   res.json({ message: 'Server is running' });
