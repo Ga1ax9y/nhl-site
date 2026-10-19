@@ -6,6 +6,7 @@ import type { StatsCategory} from "../types/statsCategory";
 import StatsTable from "../components/features/StatsTable";
 import ScrollToTop from "../components/layout/scrollToTop/ScrollToTop";
 import Controls from "../components/features/Controls";
+import Loader from "../components/layout/loader/Loader";
 import { useNavigate, useParams } from "react-router-dom";
 import type { ISeason } from "../types/season";
 import SeasonSelector from "../components/features/Dropdown";
@@ -155,10 +156,7 @@ export default function Stats() {
   if (loading) {
     return (
       <section className="stats container">
-        <div className="stats__loader">
-          <div className="loader-spinner"></div>
-          <p>Loading...</p>
-        </div>
+        <Loader />
       </section>
     );
   }
@@ -200,7 +198,7 @@ export default function Stats() {
 
   return (
     <section className="stats container">
-      <h1 className="stats__title">Skater stats</h1>
+      <h1 className="page-title">Skater stats</h1>
         <Controls<StatsCategory>
           category={skaterCategory}
           setCategory={setSkaterCategory}
@@ -232,7 +230,7 @@ export default function Stats() {
           </button>
         </div>
 
-        <h1 className="stats__title">Goalie stats</h1>
+        <h1 className="page-title">Goalie stats</h1>
         <Controls<StatsCategory>
           category={goalieCategory}
           setCategory={setGoalieCategory }

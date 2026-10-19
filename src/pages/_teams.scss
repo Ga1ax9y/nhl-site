@@ -1,25 +1,25 @@
 .teams{
     padding: 2rem var(--container-padding-x);
 
-    &__title{
+    &__section-title{
       font-family: var(--font-family-alternate);
       color: var(--color-dark);
-      font-size: 2.2rem;
-      margin-bottom: 2rem;
+      font-size: 1.3rem;
       text-align: center;
+      margin-bottom: 1rem;
       position: relative;
-      padding-bottom: 1rem;
+      padding-bottom: 0.5rem;
 
-        &::after {
-          content: '';
-          position: absolute;
-          bottom: 0;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 100px;
-          height: 3px;
-          background-color: var(--color-dark);
-        }
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 2px;
+        background-color: var(--color-dark);
+      }
     }
     &__card{
         display: grid;
@@ -31,14 +31,18 @@
             flex-direction: column;
             align-items: center;
             justify-content: start;
-            padding: 0px 8px 16px 8px;
+            padding: 4px 6px 10px 6px;
             min-width: 0;
         }
         &-logo{
+            width: 48px;
+            height: 52px;
+            object-fit: contain;
+            margin-bottom: 4px;
         }
         &-link,
         &-title{
-            font-size: clamp(12px, 2.08vw, 24px);
+            font-size: 0.85rem;
             font-weight: 500;
             text-align: center;
 
@@ -56,10 +60,6 @@
     }
     &__loader{
     }
-}
-
-.loader{
-    text-align: center;
 }
 
 @media (max-width: 640px) {

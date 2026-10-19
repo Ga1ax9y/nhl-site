@@ -4,6 +4,7 @@ import { fetchSeasonById, fetchSeasons, fetchTeams } from "../services/nhlApi";
 import StandingsTable from "../components/features/StandingsTable";
 import { useNavigate, useParams } from "react-router-dom";
 import Controls from "../components/features/Controls";
+import Loader from "../components/layout/loader/Loader";
 import type { StandingsCategory } from "../types/statsCategory";
 import type { ISeason } from "../types/season";
 import SeasonSelector from "../components/features/Dropdown";
@@ -58,21 +59,20 @@ export default function Standings() {
   };
 
   if (loading) {
-    return (
-      <section className="standings container">
-        <Controls<StandingsCategory>
+  return (
+    <section className="standings container">
+      <h1 className="page-title">
+        {currentView === "wildcard" ? "Wild Card" : currentView.charAt(0).toUpperCase() + currentView.slice(1)} Standings
+      </h1>
+      <Controls<StandingsCategory>
         category={currentView}
         setCategory={setCurrentView}
         type="standings"
-        season={season || ''}/>
-        <div className="standings__loader loader">
-          <h1 className="standings__title">
-            {currentView === "wildcard" ? "Wild Card" : currentView.charAt(0).toUpperCase() + currentView.slice(1)} Standings
-          </h1>
-          <p>Loading...</p>
-        </div>
-      </section>
-    );
+        season={season || ''}
+      />
+        <Loader />
+    </section>
+  );
   }
 
   if (error) return <div className="error-message container">{error}</div>
@@ -92,6 +92,7 @@ export default function Standings() {
   };
   return (
     <section className="standings container">
+      <h1 className="page-title">Standings</h1>
         <Controls<StandingsCategory>
           category={currentView}
           setCategory={setCurrentView}

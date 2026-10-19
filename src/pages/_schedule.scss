@@ -1,0 +1,223 @@
+.schedule{
+    padding: 2rem var(--container-padding-x);
+    max-width: var(--container-width);
+    margin: 0 auto;
+
+    &__nav{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    &__nav-button{
+        background-color: var(--color-light);
+        color: var(--color-dark);
+        border: 2px solid var(--color-dark);
+        padding: 0.4rem 1rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: all var(--transition-duration) ease;
+
+        &--wide{
+            padding: 0.4rem 1.4rem;
+        }
+
+        &:hover{
+            background-color: var(--color-dark-alternate);
+            color: var(--color-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        &:active{
+            transform: translateY(0);
+        }
+    }
+
+    &__nav-range{
+        font-family: var(--font-family-alternate);
+        font-weight: 600;
+        color: var(--color-dark);
+        display: flex;
+        align-items: baseline;
+        gap: 0.75rem;
+        margin-inline: 0.5rem;
+        text-align: center;
+    }
+
+    &__nav-date{
+        font-size: 1.05rem;
+    }
+
+    &__nav-count{
+        font-family: var(--font-family-base);
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--color-dark-alternate);
+    }
+
+    &__no-games{
+        text-align: center;
+        color: var(--color-dark-alternate);
+        font-size: 0.9rem;
+        padding: 0.75rem 0;
+    }
+
+    &__list{
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        background-color: var(--color-light);
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    &__game{
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 150px minmax(0, 1fr);
+        align-items: center;
+        gap: 0.75rem;
+        padding: 6px 12px 12px;
+        border-bottom: 1px solid var(--color-gray);
+        transition: background-color var(--transition-duration);
+
+        &:hover{
+            background-color: var(--color-light-alternate);
+        }
+
+        &:last-child{
+            border-bottom: none;
+        }
+    }
+
+    &__game-logos{
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        min-width: 0;
+        justify-content: flex-start;
+
+        &:first-child{
+            justify-content: flex-end;
+        }
+    }
+
+    &__team-logo{
+        width: 40px;
+        height: 44px;
+        object-fit: contain;
+        flex-shrink: 0;
+    }
+
+    &__team-name{
+        font-weight: 600;
+        color: var(--color-dark);
+        font-size: 0.9rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &__game-status{
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        text-align: center;
+    }
+
+    &__status{
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--color-dark-alternate);
+        white-space: nowrap;
+
+        &--live{
+            color: #e53935;
+        }
+    }
+
+    &__score{
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: var(--color-dark-alternate);
+
+        .winner{
+            color: var(--color-dark);
+            font-weight: 700;
+        }
+    }
+
+    &__tag{
+        padding: 0 0.4rem;
+        border: 1px solid var(--color-gray);
+        border-radius: 10px;
+        font-size: 0.65rem;
+        font-weight: 700;
+        line-height: 1.5;
+        color: var(--color-dark-alternate);
+        text-transform: uppercase;
+
+        &--playoff{
+            border-color: var(--color-dark);
+            color: var(--color-dark);
+        }
+    }
+
+    &__game-venue{
+        grid-column: 1 / -1;
+        text-align: center;
+        font-size: 0.75rem;
+        color: var(--color-dark-alternate);
+    }
+}
+
+@media (max-width: 640px){
+    .schedule{
+        &__nav{
+            gap: 0.5rem;
+        }
+
+        &__nav-range{
+            width: 100%;
+            order: -1;
+            justify-content: center;
+            margin-inline: 0;
+            font-size: 1rem;
+        }
+
+        &__game{
+            grid-template-columns: minmax(0, 1fr) 90px minmax(0, 1fr);
+            padding: 6px 8px 10px;
+            gap: 0.4rem;
+        }
+
+        &__team-name{
+            font-size: 0.85rem;
+        }
+
+        &__team-logo{
+            width: 30px;
+            height: 33px;
+        }
+
+        &__status,
+        &__score{
+            font-size: 0.85rem;
+        }
+
+        &__game-venue{
+            font-size: 0.7rem;
+        }
+    }
+}

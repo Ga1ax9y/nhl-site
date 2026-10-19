@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { ITeam } from "../types/team";
 import { fetchTeams } from "../services/nhlApi";
 import TeamCard from "../components/features/TeamCard";
+import Loader from "../components/layout/loader/Loader";
 
 export default function Teams() {
     const [teams, setTeams] = useState<ITeam[]>([])
@@ -27,10 +28,7 @@ export default function Teams() {
     if (loading){
       return (
         <section className="teams container">
-          <div className="teams__loader loader">
-            <h1 className="teams__title">Teams</h1>
-            <p>Loading...</p>
-          </div>
+          <Loader />
         </section>
       )
     }
@@ -38,13 +36,19 @@ export default function Teams() {
   return (
     <section className="teams container">
         <h1 className="teams__title">Teams</h1>
-        <ul className="teams__card">
-          {teams
-          .sort((a, b) => a.teamName.default.localeCompare(b.teamName.default))
-          .map((team) => (
-            <TeamCard key={team.teamAbbrev.default} team={team} />
-          ))}
-        </ul>
+        {(["Eastern", "Western"] as const).map((conference) => (
+          <div key={conference}>
+            <h2 className="teams__section-title">{conference}</h2>
+            <ul className="teams__card">
+              {teams
+              .filter((team) => team.conferenceName === conference)
+              .sort((a, b) => a.teamName.default.localeCompare(b.teamName.default))
+              .map((team) => (
+                <TeamCard key={team.teamAbbrev.default} team={team} />
+              ))}
+            </ul>
+          </div>
+        ))}
     </section>
   );
 }

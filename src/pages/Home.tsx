@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { INews } from "../types/news";
 import { fetchNews } from "../services/nhlApi";
+import Loader from "../components/layout/loader/Loader";
 
 export default function Home() {
   document.title = 'NHL | Home'
@@ -31,9 +32,7 @@ export default function Home() {
 
   if (loading) return (
       <section className="news container">
-        <div className="news__loader loader">
-          <p>Loading...</p>
-        </div>
+        <Loader />
       </section>
   )
 
@@ -53,7 +52,7 @@ export default function Home() {
 
   return (
     <section className="news container">
-      <h1 className="news__title">Latest transfers</h1>
+      <h1 className="page-title">Latest transfers</h1>
 
       <div className="news__list">
         {visibleNews.map((item) => (

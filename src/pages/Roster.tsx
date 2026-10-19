@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import type { IPlayer } from "../types/player";
 import { fetchRoster } from "../services/nhlApi";
 import PlayerCard from "../components/features/PlayerCard";
+import Loader from "../components/layout/loader/Loader";
 
 export default function Roster() {
   const { teamAbbrev } = useParams<{ teamAbbrev: string }>();
@@ -33,10 +34,7 @@ export default function Roster() {
     if (loading){
       return (
         <section className="roster container">
-          <div className="roster__loader loader">
-            <h1 className="roster__title">Team roster: {teamAbbrev}</h1>
-            <p>Loading...</p>
-          </div>
+          <Loader />
         </section>
       )
     }
@@ -44,7 +42,7 @@ export default function Roster() {
 
   return (
     <section className="roster container">
-      <h2 className="roster__title">Team roster: {teamAbbrev}</h2>
+      <h2 className="page-title">Team roster: {teamAbbrev}</h2>
       <ul className="roster__list">
         {roster.map(player => (
           <PlayerCard key={player.id} player={player} />

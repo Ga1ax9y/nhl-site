@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { fetchPlayerById } from "../services/nhlApi";
+import Loader from "../components/layout/loader/Loader";
 import type { IGoalie, IPlayer, ISkater } from "../types/player";
 
 export default function PlayerInfo() {
@@ -32,9 +33,7 @@ export default function PlayerInfo() {
     if (loading){
       return (
         <section className="player container">
-          <div className="player__loader loader">
-            <p>Loading...</p>
-          </div>
+          <Loader />
         </section>
       )
     }

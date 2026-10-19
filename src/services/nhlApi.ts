@@ -4,9 +4,10 @@ import type { IPlayer } from '../types/player';
 import type { INews } from '../types/news';
 import type { IStats } from '../types/stats';
 import type { ISeason } from '../types/season';
+import type { ILeagueSchedule } from '../types/schedule';
 
-// http://localhost:3000
-const API_BASE = "http://172.20.10.2:3000/api"
+// 172.20.10.2:3000
+const API_BASE = "http://localhost:3000/api"
 
 export const nhlApi = axios.create({
     baseURL: API_BASE
@@ -47,5 +48,11 @@ export const fetchNews = async (): Promise<INews[]> => {
 export const fetchStats = async (season?: ISeason): Promise<IStats> =>{
     const seasonId: number | string = season?.id || "current";
     const response = await nhlApi.get(`stats/${seasonId}`)
+    return response.data
+}
+
+export const fetchSchedule = async (date?: string): Promise<ILeagueSchedule> => {
+    const queryDate: string = date || "now";
+    const response = await nhlApi.get(`schedule/${queryDate}`)
     return response.data
 }
