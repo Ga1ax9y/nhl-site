@@ -10,8 +10,8 @@
 nhl-site/                  ← корень воркспейса = корень монорепо (origin: Ga1ax9y/nhl-site)
 ├── README.md               ← этот файл (обзор проекта)
 ├── DESIGN.md               ← дизайн-система: токены, компоненты, правила (читать перед UI-работой)
-├── nhl-api/                ← бэкенд-прокси
-│   ├── index.js            ← весь сервер: маршруты, CORS, парсинг RSS
+├── nhl-api/                ← бэкенд-прокси (TypeScript)
+│   ├── src/                ← весь сервер: app.ts (маршруты+CORS), contracts.ts (контракты и валидация), upstream.ts (axios к NHL API), index.ts (старт)
 │   ├── API_DOCS.md         ← неофициальный справочник по NHL API (club-schedule, edge, gamecenter…)
 │   └── README.md           ← описание прокси и его эндпоинтов
 └── nhl-site/               ← фронтенд (Vite)
@@ -43,7 +43,8 @@ npm run dev
 | `npm run dev` | Vite dev-сервер (:5173) |
 | `npm run lint` | ESLint |
 | `npx tsc -b` | Проверка типов |
-| `npm run server:dev` (в `nhl-api/`) | сервер с nodemon |
+| `npm run server:dev` (в `nhl-api/`) | сервер с nodemon + tsx (TypeScript без сборки) |
+| `npm run build` / `npm start` (в `nhl-api/`) | сборка `tsc` → `dist/` и запуск из собранного |
 
 Бэкенд слушает `0.0.0.0:3000`; CORS разрешает только origin `http://localhost:5173` и метод GET. Frontend `nhlApi.ts` жёстко указывает на `http://localhost:3000/api` — при смене порта править оба места (для работы с телефона закомментирован вариант `172.20.10.2`).
 
@@ -70,7 +71,7 @@ npm run dev
 
 ## Бэкенд (nhl-api)
 
-**Стек:** Node 22, Express 5, axios, rss-parser, cors, nodemon.
+**Стек:** Node 22, Express 5, TypeScript (tsx для dev, tsc → dist для запуска), axios, rss-parser, cors, nodemon.
 
 Все маршруты — прозрачные прокси к NHL API с централизованным `try/catch` → `{ error }` + статус 5xx:
 
@@ -103,6 +104,6 @@ npm run dev
 - **`<img>` без CSS-размера** рендерится в натуральной величине (SVG-логотипы NHL огромны) — всегда задавать width/height + `object-fit: contain`.
 - **`/v1/schedule/{date}` возвращает неделю**, а не один день — не рендерить `gameWeek` целиком, если UI по дням.
 - **score у матчей опционален** (`score?: number`) — есть только у состоявшихся игр; TS строгий, `!`/`??` где следует.
-- **Изменения `index.js` требуют перезапуска** процесса `node` (если запущен без nodemon) — мёртвая страница = проверить сначала бэкенд (`/api/ping`).
+- **Изменения `src/` в `nhl-api`** подхватывает nodemon автоматически (dev-режим); если запущен `npm start` без nodemon — нужен перезапуск. Мёртвая страница = проверить сначала бэкенд (`/api/ping`).
 - **CORS origin жёстко `localhost:5173`** — при смене порта/хоста править `index.js` и `nhlApi.ts`.
 - В `App.scss` старые `@import` дают deprecation-предупреждения Sass — это шум, не ошибка (но «expected }» = реально сломанный файл).

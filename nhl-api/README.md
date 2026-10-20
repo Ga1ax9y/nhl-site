@@ -5,6 +5,7 @@ A lightweight backend proxy that aggregates and normalizes data from the public 
 ## Tech Stack
 
 - **Node.js** — JavaScript runtime
+- **TypeScript** — typed server code (strict; `tsx` for dev, `tsc` → `dist/` for production)
 - **Express 5** — HTTP server and routing
 - **Axios** — outbound HTTP client for upstream NHL APIs
 - **rss-parser** — RSS feed parsing for news/transactions
@@ -89,9 +90,23 @@ curl http://localhost:3000/api/news
 
 ```
 nhl-api/
-├── index.js            # Express app, route definitions, and server bootstrap
+├── src/
+│   ├── index.ts        # Server bootstrap (port 3000, 0.0.0.0)
+│   ├── app.ts          # Express app, CORS, route mounting under /api
+│   ├── routes.ts       # All route handlers (standings, stats, roster, player, news, schedule)
+│   ├── contracts.ts    # Public response/error contracts + boundary param validation
+│   └── upstream.ts     # NHL API base URLs + fetchJson helper
+├── dist/               # Compiled output (tsc build)
 ├── package.json        # Project metadata and scripts
 ├── package-lock.json   # Locked dependency tree
-├── .gitignore
-└── node_modules/       # Installed dependencies
+├── tsconfig.json       # TypeScript configuration
+└── .gitignore
+```
+
+### Scripts
+
+```bash
+npm run server:dev   # Dev server (nodemon + tsx, watches src/)
+npm run build        # TypeScript build → dist/
+npm start            # Run compiled build (node dist/index.js)
 ```
