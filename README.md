@@ -10,8 +10,15 @@
 nhl-site/                  ← корень воркспейса = корень монорепо (origin: Ga1ax9y/nhl-site)
 ├── README.md               ← этот файл (обзор проекта)
 ├── DESIGN.md               ← дизайн-система: токены, компоненты, правила (читать перед UI-работой)
-├── nhl-api/                ← бэкенд-прокси (TypeScript)
-│   ├── src/                ← весь сервер: app.ts (маршруты+CORS), contracts.ts (контракты и валидация), upstream.ts (axios к NHL API), index.ts (старт)
+├── nhl-api/                ← бэкенд-прокси (TypeScript, слои routes → services → upstream → http)
+│   ├── src/
+│   │   ├── index.ts        ← композиционный корень (ручной DI: config → NhlApi → сервисы → роутер)
+│   │   ├── config/         ← порт, CORS-origin, upstream-URL (единый источник)
+│   │   ├── types/          ← публичные контракты ответов (ping, news, error)
+│   │   ├── http/           ← app, HttpClient (порт+axios), ProxyError, error-middleware
+│   │   ├── upstream/       ← NhlApi: все NHL-эндпоинты поверх HttpClient
+│   │   ├── services/       ← доменная логика: мерж лидеров, RSS-обрезка «Status: …»
+│   │   └── routes/         ← Router на домен + валидация на границе (deps.ts — DI)
 │   ├── API_DOCS.md         ← неофициальный справочник по NHL API (club-schedule, edge, gamecenter…)
 │   └── README.md           ← описание прокси и его эндпоинтов
 └── nhl-site/               ← фронтенд (Vite)
