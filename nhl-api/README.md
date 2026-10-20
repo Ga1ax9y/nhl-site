@@ -91,17 +91,39 @@ curl http://localhost:3000/api/news
 ```
 nhl-api/
 ├── src/
-│   ├── index.ts        # Server bootstrap (port 3000, 0.0.0.0)
-│   ├── app.ts          # Express app, CORS, route mounting under /api
-│   ├── routes.ts       # All route handlers (standings, stats, roster, player, news, schedule)
-│   ├── contracts.ts    # Public response/error contracts + boundary param validation
-│   └── upstream.ts     # NHL API base URLs + fetchJson helper
-├── dist/               # Compiled output (tsc build)
-├── package.json        # Project metadata and scripts
-├── package-lock.json   # Locked dependency tree
-├── tsconfig.json       # TypeScript configuration
+│   ├── index.ts              # Composition root: config → HttpClient → NhlApi → services → router → app
+│   ├── config/env.ts         # Port, CORS origin, upstream URLs (single source, env-overridable)
+│   ├── types/api.ts          # Public response contracts (ping, news, error)
+│   ├── http/
+│   │   ├── app.ts            # Express factory: CORS + /api mount + error middleware
+│   │   ├── httpClient.ts     # HttpClient port (interface) + axios adapter
+│   │   ├── proxyError.ts     # Typed error (status + message) thrown across layers
+│   │   └── errorMiddleware.ts# Uniform error → { error } with original per-endpoint messages
+│   ├── upstream/nhlApi.ts    # NhlApi: all NHL upstream endpoints over HttpClient
+│   ├── services/             # Domain logic only:
+│   │   ├── stats.service.ts  #   skater+goalie merge, 'current' → /current else {season}/2
+│   │   └── news.service.ts   #   RSS parse, "Status: …" truncation, contract mapping
+│   └── routes/
+│       ├── index.ts          # Route mounter (ping + one Router per domain)
+│       ├── deps.ts           # RouteDeps: what routers receive (dependency injection)
+│       ├── validation.ts     # Boundary param validation (abbrev/date/playerId)
+│       └── *.routes.ts       # One router per domain; validation here, no try/catch
+├── dist/                     # Compiled output (tsc build)
+├── package.json              # Project metadata and scripts
+├── package-lock.json         # Locked dependency tree
+├── tsconfig.json             # TypeScript configuration
 └── .gitignore
 ```
+
+### Layering
+
+```
+routes (HTTP + validation) → services (domain logic) → upstream/NhlApi (I/O) → HttpClient (port)
+```
+
+- Routers depend on injected deps (`RouteDeps`), services on narrow structural interfaces, `NhlApi` on the `HttpClient` port — axios is a swappable detail.
+- All wiring happens manually in `src/index.ts` (composition root); no DI container.
+- Upstream failures become `ProxyError`; the single error middleware maps them to `{ error }` responses.
 
 ### Scripts
 
