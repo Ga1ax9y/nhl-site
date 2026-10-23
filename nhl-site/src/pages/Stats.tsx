@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type AnimationEvent } from "react";
 import { fetchSeasonById, fetchSeasons, fetchStats } from "../services/nhlApi";
 import type { IGoalie, IPlayer, ISkater } from "../types/player";
 import type { IStats } from "../types/stats";
 import type { StatsCategory} from "../types/statsCategory";
 import StatsTable from "../components/features/StatsTable";
-import ScrollToTop from "../components/layout/scrollToTop/ScrollToTop";
 import Controls from "../components/features/Controls";
 import Loader from "../components/layout/loader/Loader";
 import { useNavigate, useParams } from "react-router-dom";
@@ -20,11 +19,13 @@ export default function Stats() {
   const [error, setError] = useState('');
   const [skaterCategory, setSkaterCategory] = useState<StatsCategory>('points');
   const [goalieCategory, setGoalieCategory] = useState<StatsCategory>('savePctg');
-  const modalContainerRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const lastTriggerRef = useRef<HTMLButtonElement | null>(null);
   const bodyScrollPositionRef = useRef(0);
 
-  const [showModal, setShowModal] = useState(false);
-  const [modalType, setModalType] = useState<'skater' | 'goalie'>('skater');
+  const [modalType, setModalType] = useState<'skater' | 'goalie' | null>(null);
+  const [isClosing, setIsClosing] = useState(false);
 
 
   document.title = 'NHL | Stats';
@@ -43,7 +44,7 @@ export default function Stats() {
     }, []);
 
   useEffect(() => {
-    if (showModal) {
+    if (modalType) {
       bodyScrollPositionRef.current = window.scrollY;
 
       document.body.style.overflow = 'hidden';
@@ -65,7 +66,41 @@ export default function Stats() {
       document.body.style.top = '';
       document.body.style.width = '';
     };
-  }, [showModal]);
+  }, [modalType]);
+
+  useEffect(() => {
+    if (!modalType) return;
+
+    closeButtonRef.current?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsClosing(true);
+        return;
+      }
+
+      if (event.key !== 'Tab') return;
+
+      const focusables = modalRef.current?.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (!focusables || focusables.length === 0) return;
+
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [modalType]);
 
   useEffect(() => {
 
@@ -189,12 +224,25 @@ export default function Stats() {
   const top5Goalies = allGoalies.slice(0, 5);
   const goaliesForModal = allGoalies.slice(0, 51);
 
-  const openModal = (type: 'skater' | 'goalie') => {
+  const openModal = (type: 'skater' | 'goalie', trigger: HTMLButtonElement) => {
+    lastTriggerRef.current = trigger;
+    setIsClosing(false);
     setModalType(type);
-    setShowModal(true);
   };
 
-  const closeModal = () => setShowModal(false);
+  const closeModal = () => {
+    if (isClosing) return;
+    setIsClosing(true);
+  };
+
+  const handleOverlayAnimationEnd = (event: AnimationEvent<HTMLDivElement>) => {
+    if (event.target !== event.currentTarget || !isClosing) return;
+    setModalType(null);
+    setIsClosing(false);
+    lastTriggerRef.current?.focus();
+  };
+
+  const modalPlayers = modalType === 'skater' ? skatersForModal : goaliesForModal;
 
   return (
     <section className="stats container">
@@ -222,11 +270,28 @@ export default function Stats() {
           />
           <button
             className="stats__button"
-            onClick={() => openModal('skater')}
-            aria-label="Show more skater stats"
+            onClick={(event) => openModal('skater', event.currentTarget)}
+            aria-haspopup="dialog"
+            aria-label="Show all skater stats"
             type="button"
           >
-            See more
+            See all {skatersForModal.length}
+            <svg
+              className="stats__button-icon"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M6 9l6 6 6-6"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </button>
         </div>
 
@@ -248,35 +313,72 @@ export default function Stats() {
           />
           <button
             className="stats__button"
-            onClick={() => openModal('goalie')}
-            aria-label="Show more goalie stats"
+            onClick={(event) => openModal('goalie', event.currentTarget)}
+            aria-haspopup="dialog"
+            aria-label="Show all goalie stats"
             type="button"
           >
-            See more
+            See all {goaliesForModal.length}
+            <svg
+              className="stats__button-icon"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M6 9l6 6 6-6"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </button>
         </div>
 
-        {showModal && (
-        <div className="stats__modal-overlay" onClick={closeModal}>
-          <div className="stats__modal" onClick={(e) => e.stopPropagation()} ref={modalContainerRef }>
-            <button className="stats__modal-close" onClick={closeModal} aria-label="Close modal">
-              ×
-            </button>
-            <h2 className="stats__modal-title">
-              {modalType === 'skater' ? 'Skater stats' : 'Goalie stats'} (1–50)
-            </h2>
-            <StatsTable
-              players={modalType === 'skater' ? skatersForModal : goaliesForModal}
-              category={modalType === 'skater' ? skaterCategory : goalieCategory}
-              categoryLabel={modalType === 'skater' ? getSkaterCategoryLabel() : getGoalieCategoryLabel()}
-              getStatValue={modalType === 'skater' ? getStatValueSkater : getStatValueGoalie}
-              showDecimal={
-                modalType === 'goalie' &&
-                (goalieCategory === 'savePctg' || goalieCategory === 'goalsAgainstAverage')
-              }
-              type={modalType}
-            />
-            <ScrollToTop container={modalContainerRef as React.RefObject<HTMLElement>} />
+        {modalType && (
+        <div
+          className={`stats__modal-overlay${isClosing ? ' stats__modal-overlay--closing' : ''}`}
+          onClick={closeModal}
+          onAnimationEnd={handleOverlayAnimationEnd}
+        >
+          <div
+            className={`stats__modal${isClosing ? ' stats__modal--closing' : ''}`}
+            onClick={(e) => e.stopPropagation()}
+            ref={modalRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="stats-modal-title"
+          >
+            <div className="stats__modal-header">
+              <h2 className="stats__modal-title" id="stats-modal-title">
+                {modalType === 'skater' ? 'Skater stats' : 'Goalie stats'} (1–{modalPlayers.length})
+              </h2>
+              <button
+                className="stats__modal-close"
+                onClick={closeModal}
+                ref={closeButtonRef}
+                aria-label="Close dialog"
+                type="button"
+              >
+                ×
+              </button>
+            </div>
+            <div className="stats__modal-body">
+              <StatsTable
+                players={modalPlayers}
+                category={modalType === 'skater' ? skaterCategory : goalieCategory}
+                categoryLabel={modalType === 'skater' ? getSkaterCategoryLabel() : getGoalieCategoryLabel()}
+                getStatValue={modalType === 'skater' ? getStatValueSkater : getStatValueGoalie}
+                showDecimal={
+                  modalType === 'goalie' &&
+                  (goalieCategory === 'savePctg' || goalieCategory === 'goalsAgainstAverage')
+                }
+                type={modalType}
+              />
+            </div>
           </div>
         </div>
       )}
