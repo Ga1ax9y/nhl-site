@@ -65,6 +65,7 @@ npm run dev
 |---|---|---|
 | `/` | Home — RSS-лента транзакций («Latest transfers») | `/api/news` |
 | `/schedule` | Расписание лиги по дням | `/api/schedule/:date?` |
+| `/game/:gameId` | Матч: шапка (счёт/статус), превью, три звезды, счёт по периодам, протокол (голы/штрафы), счёт-таблица | `/api/game/:gameId/landing` |
 | `/standings/:season` | Таблицы: league / division / conference / wildcard (+ сезонный селектор) | `/api/standings/...`, `/api/standings-season` |
 | `/stats/:season` | Топ-5 + модалка (1–50) лидеров: снайперы и вратари, 4 категории | `/api/stats/:season` |
 | `/teams` | Карточки команд, две секции (Eastern / Western) | `/api/standings/now` |
@@ -93,6 +94,9 @@ npm run dev
 | `/api/player/:playerId` | `/v1/player/{id}/landing` | |
 | `/api/news` | RSS eliteprospects.com | обрезает `contentSnippet` до первой строки «Status: …» |
 | `/api/schedule/:date` | `/v1/schedule/{date}` | `date` = `now` или `YYYY-MM-DD` (регэкс-валидация); без параметра → `now` |
+| `/api/game/:gameId/landing` | `/v1/gamecenter/{id}/landing` | превью (`matchup`) для FUT, `summary` (голы/штрафы/звёзды) для сыгранных |
+| `/api/game/:gameId/boxscore` | `/v1/gamecenter/{id}/boxscore` | состав и статистика игроков; на странице не используется (landing содержит score/sog) |
+| `/api/game/:gameId/play-by-play` | `/v1/gamecenter/{id}/play-by-play` | сырые события; протокол собирается из landing.summary, эндпоинт — для будущих фич |
 
 Валидация входных параметров на прокси (дат, аббревиатур) — осознанно, чтобы не пересылать мусор в NHL API.
 
