@@ -311,6 +311,15 @@
         font-weight: 600;
         color: var(--color-dark);
         white-space: nowrap;
+        text-decoration: none;
+        transition: color var(--transition-duration);
+
+        &:hover,
+        &:focus-visible {
+            color: var(--color-dark-alternate);
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
     }
 
     &__form-date {

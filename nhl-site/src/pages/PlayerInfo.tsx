@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { fetchPlayerById, fetchTeams } from "../services/nhlApi";
 import Loader from "../components/layout/loader/Loader";
 import type { ICareerLine, ILast5Game, IPlayer, ISeasonTotal } from "../types/player";
@@ -226,16 +226,20 @@ function FormChart({ games, isGoalie }: { games: ILast5Game[]; isGoalie: boolean
                         <span className="player__form-value">{getValue(game)}</span>
                         <div
                             className="player__form-track"
-                            title={`${formatGameDate(game.gameDate)} ${game.homeRoadFlag === 'H' ? 'vs' : '@'} ${game.opponentAbbrev}`}
+                            title={`${formatGameDate(game.gameDate)} vs ${game.opponentAbbrev}`}
                         >
                             <div
                                 className="player__form-bar"
                                 style={{ height: `${getRatio(game) * 100}%` }}
                             />
                         </div>
-                        <span className="player__form-opp">
-                            {game.homeRoadFlag === 'H' ? 'vs' : '@'} {game.opponentAbbrev}
-                        </span>
+                        <Link
+                            className="player__form-opp"
+                            to={`/game/${game.gameId}`}
+                            aria-label={`Game against ${game.opponentAbbrev} on ${formatGameDate(game.gameDate)}`}
+                        >
+                            vs {game.opponentAbbrev}
+                        </Link>
                         <span className="player__form-date">{formatGameDate(game.gameDate)}</span>
                     </div>
                 ))}
