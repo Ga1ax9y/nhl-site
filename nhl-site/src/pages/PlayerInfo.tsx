@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { fetchPlayerById } from "../services/nhlApi";
+import { fetchPlayerById, fetchTeams } from "../services/nhlApi";
 import Loader from "../components/layout/loader/Loader";
-import type { IPlayer, ISeasonTotal } from "../types/player";
+import type { IDraftDetails, IPlayer, ISeasonTotal } from "../types/player";
+import type { ITeam } from "../types/team";
+
+interface INhlTeamTotal {
+    name: string;
+    gamesPlayed: number;
+}
 
 interface IStatLine {
     gamesPlayed?: number;
@@ -110,6 +116,80 @@ function StatsGroup({ title, block }: { title: string; block: IStatBlock | null 
     );
 }
 
+const getNhlTeamTotals = (seasons: ISeasonTotal[]): INhlTeamTotal[] => {
+    const totals = new Map<string, number>();
+
+    for (const season of seasons) {
+        if (season.leagueAbbrev !== 'NHL' || !season.teamName) continue;
+        const name = season.teamName.default;
+        totals.set(name, (totals.get(name) ?? 0) + (season.gamesPlayed ?? 0));
+    }
+
+    return [...totals.entries()]
+        .map(([name, gamesPlayed]) => ({ name, gamesPlayed }))
+        .sort((a, b) => b.gamesPlayed - a.gamesPlayed || a.name.localeCompare(b.name))
+        .slice(0, 3);
+};
+
+function TeamsPanel({
+    teams,
+    logos,
+    draft,
+}: {
+    teams: INhlTeamTotal[];
+    logos: Map<string, ITeam>;
+    draft?: IDraftDetails;
+}) {
+    if (teams.length === 0 && !draft) {
+        return null;
+    }
+
+    return (
+        <div className="player__teams">
+            {teams.length > 0 && (
+                <>
+                    <h2 className="player__teams-title">NHL teams</h2>
+                    <ul className="player__teams-list">
+                        {teams.map((team) => {
+                            const info = logos.get(team.name);
+                            return (
+                                <li className="player__teams-item" key={team.name}>
+                                    {info ? (
+                                        <img
+                                            className="player__teams-logo"
+                                            src={info.teamLogo}
+                                            alt={info.teamAbbrev.default}
+                                            loading="lazy"
+                                        />
+                                    ) : (
+                                        <span className="player__teams-logo" aria-hidden="true" />
+                                    )}
+                                    <span className="player__teams-abbrev">
+                                        {info?.teamAbbrev.default ?? team.name}
+                                    </span>
+                                    <span className="player__teams-name">
+                                        {info ? team.name : ''}
+                                    </span>
+                                    <span className="player__teams-gp">
+                                        <strong>{team.gamesPlayed}</strong> GP
+                                    </span>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                </>
+            )}
+
+            {draft && (
+                <p className="player__draft">
+                    <span className="player__draft-label">Draft</span>
+                    {draft.year} · {draft.teamAbbrev} · Round {draft.round} · #{draft.overallPick} overall
+                </p>
+            )}
+        </div>
+    );
+}
+
 function SeasonTable({ seasons, isGoalie }: { seasons: ISeasonTotal[]; isGoalie: boolean }) {
     if (seasons.length === 0) {
         return null;
@@ -194,8 +274,21 @@ function SeasonTable({ seasons, isGoalie }: { seasons: ISeasonTotal[]; isGoalie:
 export default function PlayerInfo() {
     const { playerId } = useParams<{ playerId: string }>()
     const [player, setPlayer] = useState<IPlayer>()
+    const [teams, setTeams] = useState<ITeam[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+
+    useEffect(() => {
+        const loadTeams = async () => {
+            try {
+                setTeams(await fetchTeams());
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        loadTeams();
+    }, []);
 
     useEffect(() => {
         const loadPlayer = async () => {
@@ -263,6 +356,9 @@ export default function PlayerInfo() {
 
     const hasStats = Boolean(regularBlock || playoffBlock || careerBlock);
 
+    const topTeams = getNhlTeamTotals(player.seasonTotals ?? []);
+    const teamLogos = new Map(teams.map((team) => [team.teamName.default, team]));
+
     return (
         <section className="player container">
             <div className="player__layout">
@@ -318,6 +414,8 @@ export default function PlayerInfo() {
                             </div>
                         </div>
                     </div>
+
+                    <TeamsPanel teams={topTeams} logos={teamLogos} draft={player.draftDetails} />
                 </div>
 
                 {hasStats && (

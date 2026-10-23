@@ -125,6 +125,104 @@
         text-align: right;
     }
 
+    &__teams {
+        width: 100%;
+        padding: 1rem 1.25rem;
+        border: 1px solid var(--color-gray);
+        border-radius: 12px;
+        background-color: var(--color-light);
+    }
+
+    &__teams-title {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-family: var(--font-family-base);
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.6px;
+        text-transform: uppercase;
+        color: var(--color-dark-alternate);
+        margin: 0 0 0.5rem;
+
+        &::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background-color: var(--color-gray);
+        }
+    }
+
+    &__teams-list {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__teams-item {
+        display: grid;
+        grid-template-columns: 26px auto minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid var(--color-gray);
+
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+
+    &__teams-logo {
+        display: block;
+        width: 26px;
+        height: 26px;
+        object-fit: contain;
+    }
+
+    &__teams-abbrev {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--color-dark);
+    }
+
+    &__teams-name {
+        font-size: 0.8rem;
+        color: var(--color-dark-alternate);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &__teams-gp {
+        font-size: 0.75rem;
+        color: var(--color-dark-alternate);
+        white-space: nowrap;
+        font-variant-numeric: tabular-nums;
+
+        strong {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--color-dark);
+        }
+    }
+
+    &__draft {
+        margin-top: 0.6rem;
+        padding-top: 0.7rem;
+        border-top: 1px solid var(--color-gray);
+        font-size: 0.78rem;
+        color: var(--color-dark-alternate);
+    }
+
+    &__draft-label {
+        display: inline-block;
+        margin-right: 0.5rem;
+        font-size: 0.68rem;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        color: var(--color-dark);
+    }
+
     &__stats {
         display: flex;
         flex-direction: column;

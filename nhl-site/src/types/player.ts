@@ -20,6 +20,14 @@ export interface ISeasonTotal {
     shutouts?: number
 }
 
+export interface IDraftDetails {
+    year: number,
+    teamAbbrev: string,
+    round: number,
+    pickInRound: number,
+    overallPick: number
+}
+
 interface IPlayerBase{
     id: number,
     headshot: string,
@@ -44,6 +52,7 @@ interface IPlayerBase{
     birthDate: string,
     birthCountry: string,
     value: number,
+    draftDetails?: IDraftDetails,
     seasonTotals?: ISeasonTotal[]
 }
 
