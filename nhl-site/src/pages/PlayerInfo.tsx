@@ -23,6 +23,12 @@ interface IStatItem {
     value: string | number;
 }
 
+interface IStatBlock {
+    hero: IStatItem;
+    secondary: IStatItem[];
+    rest: IStatItem[];
+}
+
 const formatSeason = (season: number): string => {
     const text = String(season);
     return text.length === 8 ? `${text.slice(0, 4)}-${text.slice(6)}` : text;
@@ -34,42 +40,70 @@ const formatDecimal = (value?: number): string =>
 const formatPct = (value?: number): string =>
     value === undefined || Number.isNaN(value) ? '—' : (value * 100).toFixed(1);
 
-const buildStatItems = (line: IStatLine, isGoalie: boolean): IStatItem[] => {
+const formatPlusMinus = (value?: number): string =>
+    value !== undefined && value > 0 ? `+${value}` : String(value ?? 0);
+
+const buildStatBlock = (line: IStatLine, isGoalie: boolean): IStatBlock => {
     if (isGoalie) {
-        return [
-            { label: 'GP', value: line.gamesPlayed ?? 0 },
-            { label: 'W', value: line.wins ?? 0 },
-            { label: 'L', value: line.losses ?? 0 },
-            { label: 'OT', value: line.otLosses ?? 0 },
-            { label: 'GAA', value: formatDecimal(line.goalsAgainstAvg) },
-            { label: 'SV%', value: formatPct(line.savePctg) },
-            { label: 'SO', value: line.shutouts ?? 0 },
-        ];
+        return {
+            hero: { label: 'SV%', value: formatPct(line.savePctg) },
+            secondary: [
+                { label: 'W', value: line.wins ?? 0 },
+                { label: 'GAA', value: formatDecimal(line.goalsAgainstAvg) },
+            ],
+            rest: [
+                { label: 'GP', value: line.gamesPlayed ?? 0 },
+                { label: 'L', value: line.losses ?? 0 },
+                { label: 'OT', value: line.otLosses ?? 0 },
+                { label: 'SO', value: line.shutouts ?? 0 },
+            ],
+        };
     }
 
-    return [
-        { label: 'GP', value: line.gamesPlayed ?? 0 },
-        { label: 'G', value: line.goals ?? 0 },
-        { label: 'A', value: line.assists ?? 0 },
-        { label: 'P', value: line.points ?? 0 },
-        { label: '+/-', value: line.plusMinus ?? 0 },
-    ];
+    return {
+        hero: { label: 'P', value: line.points ?? 0 },
+        secondary: [
+            { label: 'G', value: line.goals ?? 0 },
+            { label: 'A', value: line.assists ?? 0 },
+        ],
+        rest: [
+            { label: 'GP', value: line.gamesPlayed ?? 0 },
+            { label: '+/-', value: formatPlusMinus(line.plusMinus) },
+        ],
+    };
 };
 
-function StatsGroup({ title, items }: { title: string; items: IStatItem[] }) {
-    if (items.length === 0) {
+function StatsGroup({ title, block }: { title: string; block: IStatBlock | null }) {
+    if (!block) {
         return null;
     }
 
     return (
-        <div className="player__stats-group">
+        <div className="player__stat-group">
             <h2 className="player__stats-title">{title}</h2>
-            <div className="player__stats-grid">
-                {items.map((item) => (
-                    <div className="player__stat-card" key={item.label}>
-                        <span className="player__stat-label">{item.label}</span>
-                        <span className="player__stat-value">{item.value}</span>
-                    </div>
+
+            <div className="player__stat-body">
+                <div className="player__hero">
+                    <span className="player__hero-label">{block.hero.label}</span>
+                    <span className="player__hero-value">{block.hero.value}</span>
+                </div>
+
+                <div className="player__hero-secondary">
+                    {block.secondary.map((item) => (
+                        <div className="player__secondary" key={item.label}>
+                            <span className="player__secondary-label">{item.label}</span>
+                            <span className="player__secondary-value">{item.value}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            <div className="player__stat-rest">
+                {block.rest.map((item) => (
+                    <span className="player__stat-rest-item" key={item.label}>
+                        <span className="player__stat-rest-label">{item.label}</span>
+                        <span className="player__stat-rest-value">{item.value}</span>
+                    </span>
                 ))}
             </div>
         </div>
@@ -217,17 +251,17 @@ export default function PlayerInfo() {
     const regularSeason = featured?.regularSeason;
     const playoffs = featured?.playoffs;
 
-    const regularItems = regularSeason?.subSeason
-        ? buildStatItems(regularSeason.subSeason, isGoalie)
-        : [];
-    const playoffItems = playoffs?.subSeason
-        ? buildStatItems(playoffs.subSeason, isGoalie)
-        : [];
-    const careerItems = regularSeason?.career
-        ? buildStatItems(regularSeason.career, isGoalie)
-        : [];
+    const regularBlock = regularSeason?.subSeason
+        ? buildStatBlock(regularSeason.subSeason, isGoalie)
+        : null;
+    const playoffBlock = playoffs?.subSeason
+        ? buildStatBlock(playoffs.subSeason, isGoalie)
+        : null;
+    const careerBlock = regularSeason?.career
+        ? buildStatBlock(regularSeason.career, isGoalie)
+        : null;
 
-    const hasStats = regularItems.length + playoffItems.length + careerItems.length > 0;
+    const hasStats = Boolean(regularBlock || playoffBlock || careerBlock);
 
     return (
         <section className="player container">
@@ -288,9 +322,9 @@ export default function PlayerInfo() {
 
                 {hasStats && (
                     <div className="player__stats">
-                        <StatsGroup title="Regular season" items={regularItems} />
-                        <StatsGroup title="Playoffs" items={playoffItems} />
-                        <StatsGroup title="Career" items={careerItems} />
+                        <StatsGroup title="Regular season" block={regularBlock} />
+                        <StatsGroup title="Playoffs" block={playoffBlock} />
+                        <StatsGroup title="Career" block={careerBlock} />
                     </div>
                 )}
             </div>
