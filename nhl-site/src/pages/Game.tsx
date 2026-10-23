@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState, type ReactNode } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { fetchGameLanding } from "../services/nhlApi";
+import { fetchGameBoxscore, fetchGameLanding } from "../services/nhlApi";
 import type {
+  IGameBoxscore,
   IGameGoal,
   IGameLanding,
   IGamePenalty,
@@ -46,6 +47,59 @@ const penaltyPlayer = (penalty: IGamePenalty): string => {
   const name = `${player.firstName?.default ?? ""} ${player.lastName?.default ?? ""}`.trim();
   return name || "Unknown player";
 };
+
+const penaltyPlayerId = (
+  penalty: IGamePenalty,
+  playerIds: Map<string, number>,
+): number | undefined => {
+  const player = penalty.committedByPlayer;
+  if (!player) return undefined;
+  if (player.playerId) return player.playerId;
+  if (player.sweaterNumber === undefined) return undefined;
+  return playerIds.get(`${penalty.teamAbbrev.default}:${player.sweaterNumber}`);
+};
+
+const boxscorePlayerIndex = (boxscore: IGameBoxscore): Map<string, number> => {
+  const index = new Map<string, number>();
+  const teams: Array<[IGameTeam, IGameBoxscore["playerByGameStats"]["awayTeam"]]> = [
+    [boxscore.awayTeam, boxscore.playerByGameStats.awayTeam],
+    [boxscore.homeTeam, boxscore.playerByGameStats.homeTeam],
+  ];
+
+  for (const [team, stats] of teams) {
+    for (const player of [...stats.forwards, ...stats.defense, ...stats.goalies]) {
+      index.set(`${team.abbrev}:${player.sweaterNumber}`, player.playerId);
+    }
+  }
+
+  return index;
+};
+
+function PlayerLink({
+  playerId,
+  strong,
+  children,
+}: {
+  playerId?: number;
+  strong?: boolean;
+  children: ReactNode;
+}) {
+  const navigate = useNavigate();
+
+  if (!playerId) {
+    return strong ? <strong>{children}</strong> : <>{children}</>;
+  }
+
+  return (
+    <button
+      className={strong ? "game__player-link game__player-link--strong" : "game__player-link"}
+      type="button"
+      onClick={() => navigate(`/player/${playerId}`)}
+    >
+      {children}
+    </button>
+  );
+}
 
 const statusLabel = (game: IGameLanding): string => {
   if (FINISHED_STATES.has(game.gameState)) {
@@ -246,7 +300,13 @@ type ProtocolEvent =
   | { kind: "goal"; time: number; goal: IGameGoal }
   | { kind: "penalty"; time: number; penalty: IGamePenalty };
 
-function Protocol({ game }: { game: IGameLanding }) {
+function Protocol({
+  game,
+  playerIds,
+}: {
+  game: IGameLanding;
+  playerIds: Map<string, number>;
+}) {
   const scoring = game.summary?.scoring ?? [];
   const penalties = game.summary?.penalties ?? [];
   const periodNumbers = Array.from(
@@ -288,16 +348,31 @@ function Protocol({ game }: { game: IGameLanding }) {
                 if (event.kind === "goal") {
                   const { goal } = event;
                   const strength = goal.strength ? STRENGTH_LABELS[goal.strength] : undefined;
-                  const assists = goal.assists?.map((assist) => assist.name.default).join(", ");
+                  const assists = goal.assists ?? [];
 
                   return (
-                    <li key={`goal-${event.time}-${goal.name.default}`} className="game__event">
+                    <li key={`goal-${event.time}-${goal.playerId}`} className="game__event">
                       <span className="game__event-time">{goal.timeInPeriod}</span>
                       <span className="game__event-team">{goal.teamAbbrev.default}</span>
                       <span className="game__event-text">
-                        <strong>{goal.name.default}</strong>
+                        <PlayerLink playerId={goal.playerId} strong>
+                          {goal.name.default}
+                        </PlayerLink>
                         {strength && <span className="game__event-badge">{strength}</span>}
-                        {assists && <span className="game__event-assists"> ({assists})</span>}
+                        {assists.length > 0 && (
+                          <span className="game__event-assists">
+                            {" ("}
+                            {assists.map((assist, index) => (
+                              <Fragment key={assist.playerId}>
+                                {index > 0 && ", "}
+                                <PlayerLink playerId={assist.playerId}>
+                                  {assist.name.default}
+                                </PlayerLink>
+                              </Fragment>
+                            ))}
+                            {")"}
+                          </span>
+                        )}
                       </span>
                       <span className="game__event-score">
                         {goal.awayScore} : {goal.homeScore}
@@ -315,7 +390,11 @@ function Protocol({ game }: { game: IGameLanding }) {
                     <span className="game__event-time">{penalty.timeInPeriod}</span>
                     <span className="game__event-team">{penalty.teamAbbrev.default}</span>
                     <span className="game__event-text">
-                      {penaltyPlayer(penalty)} · {penalty.duration} min {penalty.descKey}
+                      <PlayerLink playerId={penaltyPlayerId(penalty, playerIds)}>
+                        {penaltyPlayer(penalty)}
+                      </PlayerLink>
+                      {" · "}
+                      {penalty.duration} min {penalty.descKey}
                     </span>
                     <span className="game__event-score">{penalty.duration}:00</span>
                   </li>
@@ -332,6 +411,7 @@ function Protocol({ game }: { game: IGameLanding }) {
 export default function Game() {
   const { gameId } = useParams<{ gameId: string }>();
   const [game, setGame] = useState<IGameLanding | null>(null);
+  const [playerIds, setPlayerIds] = useState<Map<string, number>>(new Map());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -340,8 +420,15 @@ export default function Game() {
       try {
         setLoading(true);
         setError("");
+        setPlayerIds(new Map());
         if (!gameId) return;
-        setGame(await fetchGameLanding(gameId));
+        const landing = await fetchGameLanding(gameId);
+        setGame(landing);
+        if (landing.summary?.penalties?.length) {
+          fetchGameBoxscore(gameId)
+            .then((boxscore) => setPlayerIds(boxscorePlayerIndex(boxscore)))
+            .catch((err) => console.error(err));
+        }
       } catch (err) {
         setError("Error loading game");
         console.error(err);
@@ -412,7 +499,7 @@ export default function Game() {
       <Preview game={game} />
       <ThreeStars stars={game.summary?.threeStars} />
       <ScoreByPeriod game={game} />
-      <Protocol game={game} />
+      <Protocol game={game} playerIds={playerIds} />
     </section>
   );
 }

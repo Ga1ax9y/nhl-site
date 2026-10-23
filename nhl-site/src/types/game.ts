@@ -15,19 +15,32 @@ export interface IGameTeam {
     record?: string;
 }
 
+export interface IGameAssist {
+    playerId: number;
+    name: ILocalizedName;
+}
+
 export interface IGameGoal {
+    playerId: number;
     name: ILocalizedName;
     teamAbbrev: ILocalizedName;
     timeInPeriod: string;
     awayScore: number;
     homeScore: number;
     strength?: string;
-    assists?: Array<{ name: ILocalizedName }>;
+    assists?: IGameAssist[];
 }
 
 export interface IGameScoringPeriod {
     periodDescriptor: { number: number; periodType: string };
     goals: IGameGoal[];
+}
+
+export interface IGamePenaltyPlayer {
+    firstName?: ILocalizedName;
+    lastName?: ILocalizedName;
+    playerId?: number;
+    sweaterNumber?: number;
 }
 
 export interface IGamePenalty {
@@ -36,16 +49,8 @@ export interface IGamePenalty {
     type: string;
     descKey: string;
     teamAbbrev: ILocalizedName;
-    committedByPlayer?: {
-        firstName?: ILocalizedName;
-        lastName?: ILocalizedName;
-        sweaterNumber?: number;
-    };
-    drawnBy?: {
-        firstName?: ILocalizedName;
-        lastName?: ILocalizedName;
-        sweaterNumber?: number;
-    };
+    committedByPlayer?: IGamePenaltyPlayer;
+    drawnBy?: IGamePenaltyPlayer;
 }
 
 export interface IGamePenaltiesPeriod {
@@ -79,6 +84,27 @@ export interface IMatchupLeader {
         name: ILocalizedName;
         headshot?: string;
         value: number;
+    };
+}
+
+export interface IGameBoxscorePlayer {
+    playerId: number;
+    sweaterNumber: number;
+    name: ILocalizedName;
+}
+
+export interface IGameBoxscoreTeamStats {
+    forwards: IGameBoxscorePlayer[];
+    defense: IGameBoxscorePlayer[];
+    goalies: IGameBoxscorePlayer[];
+}
+
+export interface IGameBoxscore {
+    awayTeam: IGameTeam;
+    homeTeam: IGameTeam;
+    playerByGameStats: {
+        awayTeam: IGameBoxscoreTeamStats;
+        homeTeam: IGameBoxscoreTeamStats;
     };
 }
 

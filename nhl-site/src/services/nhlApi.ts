@@ -5,7 +5,7 @@ import type { INews } from '../types/news';
 import type { IStats } from '../types/stats';
 import type { ISeason } from '../types/season';
 import type { ILeagueSchedule } from '../types/schedule';
-import type { IGameLanding } from '../types/game';
+import type { IGameBoxscore, IGameLanding } from '../types/game';
 
 // 172.20.10.2:3000
 const API_BASE = "http://localhost:3000/api"
@@ -60,5 +60,10 @@ export const fetchSchedule = async (date?: string): Promise<ILeagueSchedule> => 
 
 export const fetchGameLanding = async (gameId: string): Promise<IGameLanding> => {
     const response = await nhlApi.get(`game/${gameId}/landing`)
+    return response.data
+}
+
+export const fetchGameBoxscore = async (gameId: string): Promise<IGameBoxscore> => {
+    const response = await nhlApi.get(`game/${gameId}/boxscore`)
     return response.data
 }

@@ -380,6 +380,25 @@
         color: var(--color-dark);
     }
 
+    &__player-link {
+        padding: 0;
+        margin: 0;
+        background: none;
+        border: none;
+        font: inherit;
+        color: inherit;
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;
+        }
+
+        &--strong {
+            font-weight: 600;
+            color: var(--color-dark);
+        }
+    }
+
     &__event-score {
         font-size: 0.78rem;
         font-weight: 600;
