@@ -12,12 +12,66 @@ export interface ISeasonTotal {
     plusMinus?: number,
     pim?: number,
     shots?: number,
+    powerPlayGoals?: number,
+    powerPlayPoints?: number,
+    shootingPctg?: number,
+    avgToi?: string,
+    timeOnIce?: string,
+    wins?: number,
+    losses?: number,
+    otLosses?: number,
+    goalsAgainst?: number,
+    goalsAgainstAvg?: number,
+    savePctg?: number,
+    shutouts?: number,
+    shotsAgainst?: number
+}
+
+export interface ICareerLine {
+    gamesPlayed?: number,
+    goals?: number,
+    assists?: number,
+    points?: number,
+    plusMinus?: number,
+    pim?: number,
+    shots?: number,
+    powerPlayGoals?: number,
+    powerPlayPoints?: number,
+    shootingPctg?: number,
+    avgToi?: string,
+    timeOnIce?: string,
     wins?: number,
     losses?: number,
     otLosses?: number,
     goalsAgainstAvg?: number,
     savePctg?: number,
-    shutouts?: number
+    shutouts?: number,
+    shotsAgainst?: number
+}
+
+export interface ICareerTotals {
+    regularSeason?: ICareerLine,
+    playoffs?: ICareerLine
+}
+
+export interface ILast5Game {
+    gameId: number,
+    gameDate: string,
+    gameTypeId?: number,
+    teamAbbrev: string,
+    opponentAbbrev: string,
+    homeRoadFlag: 'H' | 'R',
+    goals?: number,
+    assists?: number,
+    points?: number,
+    plusMinus?: number,
+    pim?: number,
+    shots?: number,
+    toi?: string,
+    decision?: string,
+    goalsAgainst?: number,
+    savePctg?: number,
+    shotsAgainst?: number
 }
 
 export interface IDraftDetails {
@@ -53,6 +107,11 @@ interface IPlayerBase{
     birthCountry: string,
     value: number,
     draftDetails?: IDraftDetails,
+    careerTotals?: ICareerTotals,
+    last5Games?: ILast5Game[],
+    badges?: string[],
+    inHHOF?: number,
+    inTop100AllTime?: number,
     seasonTotals?: ISeasonTotal[]
 }
 
