@@ -55,6 +55,7 @@ export interface IGamePenaltiesPeriod {
 
 export interface IGameStar {
     star: number;
+    playerId: number;
     name: ILocalizedName;
     teamAbbrev: string;
     position: string;
@@ -67,8 +68,18 @@ export interface IGameStar {
 
 export interface IMatchupLeader {
     category: string;
-    awayLeader: { name: ILocalizedName; value: number };
-    homeLeader: { name: ILocalizedName; value: number };
+    awayLeader: {
+        playerId: number;
+        name: ILocalizedName;
+        headshot?: string;
+        value: number;
+    };
+    homeLeader: {
+        playerId: number;
+        name: ILocalizedName;
+        headshot?: string;
+        value: number;
+    };
 }
 
 export interface IGameLanding {

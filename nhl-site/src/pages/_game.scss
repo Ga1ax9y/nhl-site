@@ -37,8 +37,8 @@
     }
 
     &__logo {
-        width: 72px;
-        height: 80px;
+        width: 120px;
+        height: 132px;
         object-fit: contain;
     }
 
@@ -145,15 +145,58 @@
     }
 
     &__matchup-player {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        width: 100%;
+        min-width: 0;
+        padding: 3px 4px;
+        background: none;
+        border: none;
+        font: inherit;
         font-weight: 600;
+        font-size: 0.85rem;
         color: var(--color-dark);
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color var(--transition-duration) ease;
+
+        &:hover {
+            background-color: var(--color-light-alternate);
+
+            .game__matchup-name {
+                text-decoration: underline;
+            }
+        }
+
+        &--away {
+            justify-content: flex-end;
+        }
+
+        &--home {
+            justify-content: flex-start;
+        }
+    }
+
+    &__matchup-photo {
+        width: 30px;
+        height: 30px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        border: 1px solid var(--color-gray);
+        object-fit: cover;
+    }
+
+    &__matchup-name {
+        min-width: 0;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+    }
 
-        &--home {
-            text-align: right;
-        }
+    &__matchup-value {
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
     }
 
     &__matchup-category {
@@ -174,16 +217,42 @@
 
     &__star {
         display: grid;
-        grid-template-columns: 24px minmax(0, 1fr) auto auto;
+        grid-template-columns: 24px 32px minmax(0, 1fr) auto auto;
         align-items: center;
         gap: 0.6rem;
+        width: 100%;
         padding: 6px 4px;
+        background: none;
+        border: none;
         border-bottom: 1px solid var(--color-gray);
+        font: inherit;
         font-size: 0.85rem;
+        color: inherit;
+        text-align: left;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color var(--transition-duration) ease;
 
-        &:last-child {
-            border-bottom: none;
+        &:hover {
+            background-color: var(--color-light-alternate);
+
+            .game__star-name {
+                text-decoration: underline;
+            }
         }
+    }
+
+    &__stars li:last-child &__star {
+        border-bottom: none;
+    }
+
+    &__star-photo {
+        width: 30px;
+        height: 30px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        border: 1px solid var(--color-gray);
+        object-fit: cover;
     }
 
     &__star-number {
@@ -342,8 +411,8 @@
         }
 
         &__logo {
-            width: 46px;
-            height: 51px;
+            width: 64px;
+            height: 70px;
         }
 
         &__team-name {
@@ -356,7 +425,16 @@
 
         &__matchup-row {
             gap: 0.4rem;
+        }
+
+        &__matchup-player {
             font-size: 0.78rem;
+            gap: 0.3rem;
+        }
+
+        &__matchup-photo {
+            width: 24px;
+            height: 24px;
         }
 
         &__event {
@@ -366,7 +444,12 @@
         }
 
         &__star {
-            grid-template-columns: 22px minmax(0, 1fr) auto;
+            grid-template-columns: 22px 26px minmax(0, 1fr) auto;
+        }
+
+        &__star-photo {
+            width: 24px;
+            height: 24px;
         }
 
         &__star-stat {
@@ -378,11 +461,16 @@
 @media (max-width: 480px) {
     .game {
         &__team-record,
-        &__venue {
+        &__venue,
+        &__star-team {
             display: none;
         }
 
-        &__matchup-player {
+        &__star {
+            grid-template-columns: 22px 24px minmax(0, 1fr);
+        }
+
+        &__matchup-name {
             white-space: normal;
         }
     }

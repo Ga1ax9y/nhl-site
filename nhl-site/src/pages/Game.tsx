@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { fetchGameLanding } from "../services/nhlApi";
 import type {
   IGameGoal,
@@ -7,6 +7,7 @@ import type {
   IGamePenalty,
   IGameStar,
   IGameTeam,
+  IMatchupLeader,
 } from "../types/game";
 import Loader from "../components/layout/loader/Loader";
 
@@ -74,7 +75,37 @@ function TeamBlock({ team }: { team: IGameTeam }) {
   );
 }
 
+function MatchupPlayer({
+  leader,
+  side,
+  onClick,
+}: {
+  leader: IMatchupLeader["awayLeader"];
+  side: "away" | "home";
+  onClick: () => void;
+}) {
+  return (
+    <button
+      className={`game__matchup-player game__matchup-player--${side}`}
+      type="button"
+      onClick={onClick}
+    >
+      {leader.headshot && (
+        <img
+          className="game__matchup-photo"
+          src={leader.headshot}
+          alt={leader.name.default}
+          loading="lazy"
+        />
+      )}
+      <span className="game__matchup-name">{leader.name.default}</span>
+      <span className="game__matchup-value">{leader.value}</span>
+    </button>
+  );
+}
+
 function Preview({ game }: { game: IGameLanding }) {
+  const navigate = useNavigate();
   const leaders = game.matchup?.skaterComparison?.leaders ?? [];
 
   if (leaders.length === 0) return null;
@@ -85,13 +116,17 @@ function Preview({ game }: { game: IGameLanding }) {
       <ul className="game__matchup">
         {leaders.map((leader) => (
           <li key={leader.category} className="game__matchup-row">
-            <span className="game__matchup-player">
-              {leader.awayLeader.name.default} · {leader.awayLeader.value}
-            </span>
+            <MatchupPlayer
+              leader={leader.awayLeader}
+              side="away"
+              onClick={() => navigate(`/player/${leader.awayLeader.playerId}`)}
+            />
             <span className="game__matchup-category">{leader.category}</span>
-            <span className="game__matchup-player game__matchup-player--home">
-              {leader.homeLeader.name.default} · {leader.homeLeader.value}
-            </span>
+            <MatchupPlayer
+              leader={leader.homeLeader}
+              side="home"
+              onClick={() => navigate(`/player/${leader.homeLeader.playerId}`)}
+            />
           </li>
         ))}
       </ul>
@@ -110,6 +145,8 @@ function starStats(star: IGameStar): string {
 }
 
 function ThreeStars({ stars }: { stars?: IGameStar[] }) {
+  const navigate = useNavigate();
+
   if (!stars || stars.length === 0) return null;
 
   return (
@@ -117,13 +154,27 @@ function ThreeStars({ stars }: { stars?: IGameStar[] }) {
       <h2 className="game__subtitle">Three stars</h2>
       <ul className="game__stars">
         {stars.map((star) => (
-          <li key={star.star} className="game__star">
-            <span className="game__star-number">{star.star}</span>
-            <span className="game__star-name">{star.name.default}</span>
-            <span className="game__star-team">
-              {star.teamAbbrev} · {star.position}
-            </span>
-            <span className="game__star-stat">{starStats(star)}</span>
+          <li key={star.star}>
+            <button
+              className="game__star"
+              type="button"
+              onClick={() => navigate(`/player/${star.playerId}`)}
+            >
+              <span className="game__star-number">{star.star}</span>
+              {star.headshot && (
+                <img
+                  className="game__star-photo"
+                  src={star.headshot}
+                  alt={star.name.default}
+                  loading="lazy"
+                />
+              )}
+              <span className="game__star-name">{star.name.default}</span>
+              <span className="game__star-team">
+                {star.teamAbbrev} · {star.position}
+              </span>
+              <span className="game__star-stat">{starStats(star)}</span>
+            </button>
           </li>
         ))}
       </ul>
