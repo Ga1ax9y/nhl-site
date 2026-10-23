@@ -1,3 +1,25 @@
+export interface ISeasonTotal {
+    season: number,
+    gameTypeId: number,
+    leagueAbbrev: string,
+    teamName?: {
+        default: string
+    },
+    gamesPlayed: number,
+    goals?: number,
+    assists?: number,
+    points?: number,
+    plusMinus?: number,
+    pim?: number,
+    shots?: number,
+    wins?: number,
+    losses?: number,
+    otLosses?: number,
+    goalsAgainstAvg?: number,
+    savePctg?: number,
+    shutouts?: number
+}
+
 interface IPlayerBase{
     id: number,
     headshot: string,
@@ -21,7 +43,8 @@ interface IPlayerBase{
     weightInKilograms: number,
     birthDate: string,
     birthCountry: string,
-    value: number
+    value: number,
+    seasonTotals?: ISeasonTotal[]
 }
 
 export interface ISkater extends IPlayerBase{

@@ -1,18 +1,24 @@
 .player {
     padding: 2rem var(--container-padding-x);
 
-    &__header {
+    &__layout {
+        display: grid;
+        grid-template-columns: 320px minmax(0, 1fr);
+        gap: 2.5rem;
+        align-items: start;
+        margin-bottom: 2.5rem;
+    }
+
+    &__profile {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 2rem;
-        margin-bottom: 2rem;
-        text-align: center;
+        gap: 1.5rem;
     }
 
     &__avatar-container {
-        width: 180px;
-        height: 180px;
+        width: 220px;
+        height: 220px;
         border-radius: 50%;
         overflow: hidden;
         border: 5px solid var(--color-dark);
@@ -25,11 +31,17 @@
         object-fit: cover;
     }
 
+    &__identity {
+        text-align: center;
+    }
+
     &__name {
-        font-size: 2.2rem;
-        margin: 0 0 0.5rem;
+        font-size: 2rem;
+        margin: 0 0 0.6rem;
         font-weight: 400;
         color: var(--color-dark);
+        line-height: 1.15;
+        overflow-wrap: anywhere;
 
         strong {
             font-weight: 700;
@@ -40,8 +52,9 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 1.5rem;
-        font-size: 1.1rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+        font-size: 1.05rem;
         color: var(--color-dark-alternate);
     }
 
@@ -53,141 +66,222 @@
     &__position {
         background-color: var(--color-dark);
         color: var(--color-light);
-        padding: 0.2rem 0.8rem;
+        padding: 0.15rem 0.7rem;
         border-radius: 20px;
         text-transform: uppercase;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
 
     &__team {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.4rem;
     }
 
     &__team-logo {
-        height: 24px;
-        width: auto;
+        width: 28px;
+        height: 28px;
+        object-fit: contain;
     }
 
-  &__details {
-    border-radius: 12px;
-    padding: 1.5rem;
-    max-width: 400px;
-    margin-left: auto;
-    margin-right: auto;
+    &__details {
+        width: 100%;
+        padding: 1rem 1.25rem;
+        border: 1px solid var(--color-gray);
+        border-radius: 12px;
+        background-color: var(--color-light);
+    }
 
-    &__list {
+    &__details-list {
         display: flex;
         flex-direction: column;
-        gap: 0.8rem;
     }
 
-    &-item {
+    &__details-item {
         display: flex;
         justify-content: space-between;
-        align-items: center;
-        padding: 0.8rem 0;
+        align-items: baseline;
+        gap: 1rem;
+        padding: 0.55rem 0;
         border-bottom: 1px solid var(--color-gray);
 
         &:last-child {
-        border-bottom: none;
+            border-bottom: none;
         }
     }
 
-    &-label {
-        font-size: 0.95rem;
-        color: var(--color-dark-alternate);
-        font-weight: 500;
-    }
-
-    &-value {
-        font-size: 1rem;
-        color: var(--color-dark);
+    &__detail-label {
+        font-size: 0.78rem;
         font-weight: 600;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        color: var(--color-dark-alternate);
     }
-  }
 
-
-    .section-title {
-        font-size: 1.5rem;
+    &__detail-value {
+        font-size: 0.9rem;
+        font-weight: 600;
         color: var(--color-dark);
-        margin: 0 0 1.5rem;
-        text-align: center;
-        position: relative;
-        padding-bottom: 0.5rem;
-
-        &::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 2px;
-            background-color: var(--color-dark);
-        }
+        text-align: right;
     }
 
     &__stats {
-        background-color: var(--color-light-alternate);
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 1.5rem;
         border-radius: 12px;
-        padding: 2rem;
+        background-color: var(--color-light-alternate);
     }
 
-    &__stats-title:not(:first-child) {
-        font-size: 1.5rem;
-        color: var(--color-dark);
-        padding-block: 1rem;
-    }
-    &__stats-title:first-child{
-        padding-bottom: 1rem;
+    &__stats-title {
+        font-family: var(--font-family-base);
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.6px;
+        text-transform: uppercase;
+        color: var(--color-dark-alternate);
+        margin: 0 0 0.75rem;
     }
 
     &__stats-grid {
         display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+        gap: 0.75rem;
     }
 
     &__stat-card {
-        background-color: var(--color-light);
+        display: flex;
+        flex-direction: column;
+        gap: 0.15rem;
+        padding: 0.8rem 0.5rem;
+        border: 1px solid var(--color-gray);
         border-radius: 8px;
-        padding: 1.2rem;
+        background-color: var(--color-light);
         text-align: center;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-        transition: transform var(--transition-duration);
-
-        &:hover {
-            transform: translateY(-3px);
-        }
     }
 
     &__stat-label {
-        display: block;
-        font-size: 0.9rem;
+        font-size: 0.68rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
         color: var(--color-dark-alternate);
-        margin-bottom: 0.5rem;
     }
 
     &__stat-value {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: var(--color-dark);
         font-family: var(--font-family-alternate);
+        font-size: 1.4rem;
+        font-weight: 700;
+        line-height: 1.2;
+        color: var(--color-dark);
+        font-variant-numeric: tabular-nums;
     }
 
-    .error-message {
-        text-align: center;
-        padding: 2rem;
-        color: var(--color-dark);
+    &__seasons {
+        padding: 1.5rem;
+        border-radius: 12px;
+        background-color: var(--color-light-alternate);
+    }
+
+    &__seasons-title {
         font-size: 1.2rem;
+        color: var(--color-dark);
+        margin-bottom: 1rem;
+    }
+
+    &__seasons-scroll {
+        overflow-x: auto;
+        border-radius: 8px;
+    }
+
+    &__season-table {
+        width: 100%;
+        min-width: 720px;
+        border-collapse: collapse;
+        background-color: var(--color-light);
+        font-variant-numeric: tabular-nums;
+
+        th {
+            padding: 0.6rem 0.5rem;
+            background-color: var(--color-dark-alternate);
+            color: var(--color-light);
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            text-align: center;
+            white-space: nowrap;
+
+            &:nth-child(-n + 3) {
+                text-align: left;
+            }
+        }
+
+        td {
+            padding: 0.55rem 0.5rem;
+            font-size: 0.85rem;
+            text-align: center;
+            border-bottom: 1px solid var(--color-gray);
+            white-space: nowrap;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background-color: var(--color-light-alternate);
+        }
+    }
+
+    &__season-cell--season {
+        font-weight: 700;
+        color: var(--color-dark);
+        text-align: left;
+    }
+
+    &__season-cell--team {
+        font-weight: 500;
+        text-align: left;
+    }
+
+    &__season-tag {
+        display: inline-block;
+        margin-left: 0.4rem;
+        padding: 0 0.3rem;
+        font-size: 0.6rem;
+        font-weight: 700;
+        letter-spacing: 0.4px;
+        color: var(--color-light);
+        background-color: var(--color-dark);
+        border-radius: 4px;
+        vertical-align: middle;
+    }
+}
+
+@media (max-width: 1024px) {
+    .player {
+        &__layout {
+            grid-template-columns: 260px minmax(0, 1fr);
+            gap: 1.5rem;
+        }
+
+        &__avatar-container {
+            width: 180px;
+            height: 180px;
+        }
+
+        &__name {
+            font-size: 1.7rem;
+        }
     }
 }
 
 @media (max-width: 768px) {
     .player {
-        &__header {
+        &__layout {
+            grid-template-columns: 1fr;
             gap: 1.5rem;
         }
 
@@ -196,20 +290,43 @@
             height: 150px;
         }
 
-        &__name {
-            font-size: 1.8rem;
+        &__stats {
+            padding: 1.25rem;
         }
 
         &__stats-grid {
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(84px, 1fr));
+            gap: 0.6rem;
+        }
+
+        &__seasons {
+            padding: 1.25rem;
+        }
+
+        &__season-table {
+            min-width: 640px;
         }
     }
 }
-@media (max-width: 768px) {
+
+@media (max-width: 480px) {
     .player {
+        padding: 1rem 0.5rem;
+
+        &__stats {
+            padding: 1rem;
+        }
+
         &__stats-grid {
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(76px, 1fr));
+        }
+
+        &__stat-value {
+            font-size: 1.2rem;
+        }
+
+        &__seasons {
+            padding: 1rem;
         }
     }
 }
