@@ -305,8 +305,8 @@ function SeasonTable({ seasons, isGoalie }: { seasons: ISeasonTotal[]; isGoalie:
     );
 
     return (
-        <div className="player__seasons">
-            <h2 className="player__seasons-title">Season totals</h2>
+        <div className="player__seasons player__panel">
+            <h2 className="player__panel-title">Season totals</h2>
             <div className="player__seasons-scroll">
                 <table className="player__season-table">
                     <thead>

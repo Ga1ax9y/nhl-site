@@ -474,18 +474,6 @@
         background-color: var(--color-dark-hover);
     }
 
-    &__seasons {
-        padding: 1.5rem;
-        border-radius: 12px;
-        background-color: var(--color-light-alternate);
-    }
-
-    &__seasons-title {
-        font-size: 1.2rem;
-        color: var(--color-dark);
-        margin-bottom: 1rem;
-    }
-
     &__seasons-scroll {
         overflow-x: auto;
         border-radius: 8px;
@@ -495,16 +483,15 @@
         width: 100%;
         min-width: 720px;
         border-collapse: collapse;
-        background-color: var(--color-light);
         font-variant-numeric: tabular-nums;
 
         th {
-            padding: 0.6rem 0.5rem;
+            padding: 0.5rem 0.45rem;
             background-color: var(--color-dark-alternate);
             color: var(--color-light);
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 600;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.4px;
             text-transform: uppercase;
             text-align: center;
             white-space: nowrap;
@@ -515,7 +502,7 @@
         }
 
         td {
-            padding: 0.55rem 0.5rem;
+            padding: 0.6rem 0.45rem;
             font-size: 0.85rem;
             text-align: center;
             border-bottom: 1px solid var(--color-gray);
@@ -524,10 +511,6 @@
 
         tbody tr:last-child td {
             border-bottom: none;
-        }
-
-        tbody tr:hover {
-            background-color: var(--color-light-alternate);
         }
     }
 
@@ -641,10 +624,6 @@
             min-width: 520px;
         }
 
-        &__seasons {
-            padding: 1.25rem;
-        }
-
         &__season-table {
             min-width: 640px;
         }
@@ -692,10 +671,6 @@
 
         &__form-date {
             display: none;
-        }
-
-        &__seasons {
-            padding: 1rem;
         }
     }
 }
