@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type AnimationEvent } from "react";
+import { useEffect, useState } from "react";
 import { fetchSeasonById, fetchSeasons, fetchStats } from "../services/nhlApi";
 import type { IGoalie, IPlayer, ISkater } from "../types/player";
 import type { IStats } from "../types/stats";
@@ -10,6 +10,74 @@ import { useNavigate, useParams } from "react-router-dom";
 import type { ISeason } from "../types/season";
 import SeasonSelector from "../components/features/Dropdown";
 
+const PAGE_SIZE = 5;
+
+const getPageItems = (current: number, total: number): Array<number | 'gap'> => {
+  if (total <= 7) return Array.from({ length: total }, (_, index) => index + 1);
+  if (current <= 4) return [1, 2, 3, 4, 5, 'gap', total];
+  if (current >= total - 3) return [1, 'gap', total - 4, total - 3, total - 2, total - 1, total];
+  return [1, 'gap', current - 1, current, current + 1, 'gap', total];
+};
+
+function Pagination({
+  page,
+  pageCount,
+  onChange,
+  label,
+}: {
+  page: number;
+  pageCount: number;
+  onChange: (page: number) => void;
+  label: string;
+}) {
+  if (pageCount <= 1) return null;
+
+  return (
+    <nav className="stats__pagination" aria-label={label}>
+      <button
+        className="stats__pagination-button stats__pagination-button--arrow"
+        type="button"
+        onClick={() => onChange(page - 1)}
+        disabled={page === 1}
+        aria-label="Previous page"
+      >
+        ‹
+      </button>
+
+      {getPageItems(page, pageCount).map((item, index) =>
+        item === 'gap' ? (
+          <span key={`gap-${index}`} className="stats__pagination-gap" aria-hidden="true">
+            …
+          </span>
+        ) : (
+          <button
+            key={item}
+            className={`stats__pagination-button ${
+              item === page ? 'stats__pagination-button--active' : ''
+            }`}
+            type="button"
+            onClick={() => onChange(item)}
+            aria-current={item === page ? 'page' : undefined}
+            aria-label={`Page ${item}`}
+          >
+            {item}
+          </button>
+        )
+      )}
+
+      <button
+        className="stats__pagination-button stats__pagination-button--arrow"
+        type="button"
+        onClick={() => onChange(page + 1)}
+        disabled={page === pageCount}
+        aria-label="Next page"
+      >
+        ›
+      </button>
+    </nav>
+  );
+}
+
 export default function Stats() {
   const { season } = useParams<{ season: string }>();
   const navigate = useNavigate();
@@ -19,14 +87,8 @@ export default function Stats() {
   const [error, setError] = useState('');
   const [skaterCategory, setSkaterCategory] = useState<StatsCategory>('points');
   const [goalieCategory, setGoalieCategory] = useState<StatsCategory>('savePctg');
-  const modalRef = useRef<HTMLDivElement>(null);
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const lastTriggerRef = useRef<HTMLButtonElement | null>(null);
-  const bodyScrollPositionRef = useRef(0);
-
-  const [modalType, setModalType] = useState<'skater' | 'goalie' | null>(null);
-  const [isClosing, setIsClosing] = useState(false);
-
+  const [skaterPage, setSkaterPage] = useState(1);
+  const [goaliePage, setGoaliePage] = useState(1);
 
   document.title = 'NHL | Stats';
 
@@ -44,69 +106,12 @@ export default function Stats() {
     }, []);
 
   useEffect(() => {
-    if (modalType) {
-      bodyScrollPositionRef.current = window.scrollY;
-
-      document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${bodyScrollPositionRef.current}px`;
-      document.body.style.width = '100%';
-    } else {
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-
-      window.scrollTo(0, bodyScrollPositionRef.current);
-    }
-
-    return () => {
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-    };
-  }, [modalType]);
-
-  useEffect(() => {
-    if (!modalType) return;
-
-    closeButtonRef.current?.focus();
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setIsClosing(true);
-        return;
-      }
-
-      if (event.key !== 'Tab') return;
-
-      const focusables = modalRef.current?.querySelectorAll<HTMLElement>(
-        'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])'
-      );
-      if (!focusables || focusables.length === 0) return;
-
-      const first = focusables[0];
-      const last = focusables[focusables.length - 1];
-
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [modalType]);
-
-  useEffect(() => {
 
     const loadStats = async () => {
       try {
         setLoading(true);
+        setSkaterPage(1);
+        setGoaliePage(1);
         const currentSeason = await fetchSeasonById(season as string);
         const data = await fetchStats(currentSeason);
         setStats(data);
@@ -188,6 +193,16 @@ export default function Stats() {
     navigate(`/stats/${seasonValue}`);
   };
 
+  const handleSkaterCategoryChange = (category: StatsCategory) => {
+    setSkaterCategory(category);
+    setSkaterPage(1);
+  };
+
+  const handleGoalieCategoryChange = (category: StatsCategory) => {
+    setGoalieCategory(category);
+    setGoaliePage(1);
+  };
+
   if (loading) {
     return (
       <section className="stats container">
@@ -217,39 +232,27 @@ export default function Stats() {
   }
 
   const allSkaters = getCurrentStatsSkaters();
-  const top5Skaters = allSkaters.slice(0, 5);
-  const skatersForModal = allSkaters.slice(0, 51);
+  const skaterPageCount = Math.ceil(allSkaters.length / PAGE_SIZE);
+  const currentSkaterPage = Math.min(skaterPage, Math.max(skaterPageCount, 1));
+  const skaterPagePlayers = allSkaters.slice(
+    (currentSkaterPage - 1) * PAGE_SIZE,
+    currentSkaterPage * PAGE_SIZE
+  );
 
   const allGoalies = getCurrentStatsGoalies();
-  const top5Goalies = allGoalies.slice(0, 5);
-  const goaliesForModal = allGoalies.slice(0, 51);
-
-  const openModal = (type: 'skater' | 'goalie', trigger: HTMLButtonElement) => {
-    lastTriggerRef.current = trigger;
-    setIsClosing(false);
-    setModalType(type);
-  };
-
-  const closeModal = () => {
-    if (isClosing) return;
-    setIsClosing(true);
-  };
-
-  const handleOverlayAnimationEnd = (event: AnimationEvent<HTMLDivElement>) => {
-    if (event.target !== event.currentTarget || !isClosing) return;
-    setModalType(null);
-    setIsClosing(false);
-    lastTriggerRef.current?.focus();
-  };
-
-  const modalPlayers = modalType === 'skater' ? skatersForModal : goaliesForModal;
+  const goaliePageCount = Math.ceil(allGoalies.length / PAGE_SIZE);
+  const currentGoaliePage = Math.min(goaliePage, Math.max(goaliePageCount, 1));
+  const goaliePagePlayers = allGoalies.slice(
+    (currentGoaliePage - 1) * PAGE_SIZE,
+    currentGoaliePage * PAGE_SIZE
+  );
 
   return (
     <section className="stats container">
       <h1 className="page-title">Skater stats</h1>
         <Controls<StatsCategory>
           category={skaterCategory}
-          setCategory={setSkaterCategory}
+          setCategory={handleSkaterCategoryChange}
           type="skater"
           season={season || ''}
         />
@@ -262,126 +265,45 @@ export default function Stats() {
                 />
         <div className="stats__table-wrapper">
           <StatsTable
-            players={top5Skaters}
+            players={skaterPagePlayers}
             category={skaterCategory}
             categoryLabel={getSkaterCategoryLabel()}
             getStatValue={getStatValueSkater}
+            startIndex={(currentSkaterPage - 1) * PAGE_SIZE}
             type="skater"
           />
-          <button
-            className="stats__button"
-            onClick={(event) => openModal('skater', event.currentTarget)}
-            aria-haspopup="dialog"
-            aria-label="Show all skater stats"
-            type="button"
-          >
-            See all {skatersForModal.length}
-            <svg
-              className="stats__button-icon"
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path
-                d="M6 9l6 6 6-6"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
+          <Pagination
+            page={currentSkaterPage}
+            pageCount={skaterPageCount}
+            onChange={setSkaterPage}
+            label="Skater stats pages"
+          />
         </div>
 
         <h1 className="page-title">Goalie stats</h1>
         <Controls<StatsCategory>
           category={goalieCategory}
-          setCategory={setGoalieCategory }
+          setCategory={handleGoalieCategoryChange}
           type="goalie"
           season={season || ''}
         />
         <div className="stats__table-wrapper">
           <StatsTable
-            players={top5Goalies}
+            players={goaliePagePlayers}
             category={goalieCategory}
             categoryLabel={getGoalieCategoryLabel()}
             getStatValue={getStatValueGoalie}
             showDecimal={goalieCategory === "savePctg" || goalieCategory === "goalsAgainstAverage"}
+            startIndex={(currentGoaliePage - 1) * PAGE_SIZE}
             type="goalie"
           />
-          <button
-            className="stats__button"
-            onClick={(event) => openModal('goalie', event.currentTarget)}
-            aria-haspopup="dialog"
-            aria-label="Show all goalie stats"
-            type="button"
-          >
-            See all {goaliesForModal.length}
-            <svg
-              className="stats__button-icon"
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path
-                d="M6 9l6 6 6-6"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
+          <Pagination
+            page={currentGoaliePage}
+            pageCount={goaliePageCount}
+            onChange={setGoaliePage}
+            label="Goalie stats pages"
+          />
         </div>
-
-        {modalType && (
-        <div
-          className={`stats__modal-overlay${isClosing ? ' stats__modal-overlay--closing' : ''}`}
-          onClick={closeModal}
-          onAnimationEnd={handleOverlayAnimationEnd}
-        >
-          <div
-            className={`stats__modal${isClosing ? ' stats__modal--closing' : ''}`}
-            onClick={(e) => e.stopPropagation()}
-            ref={modalRef}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="stats-modal-title"
-          >
-            <div className="stats__modal-header">
-              <h2 className="stats__modal-title" id="stats-modal-title">
-                {modalType === 'skater' ? 'Skater stats' : 'Goalie stats'} (1–{modalPlayers.length})
-              </h2>
-              <button
-                className="stats__modal-close"
-                onClick={closeModal}
-                ref={closeButtonRef}
-                aria-label="Close dialog"
-                type="button"
-              >
-                ×
-              </button>
-            </div>
-            <div className="stats__modal-body">
-              <StatsTable
-                players={modalPlayers}
-                category={modalType === 'skater' ? skaterCategory : goalieCategory}
-                categoryLabel={modalType === 'skater' ? getSkaterCategoryLabel() : getGoalieCategoryLabel()}
-                getStatValue={modalType === 'skater' ? getStatValueSkater : getStatValueGoalie}
-                showDecimal={
-                  modalType === 'goalie' &&
-                  (goalieCategory === 'savePctg' || goalieCategory === 'goalsAgainstAverage')
-                }
-                type={modalType}
-              />
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   );
 }

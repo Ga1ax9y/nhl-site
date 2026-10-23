@@ -8,6 +8,7 @@ interface StatsTableProps {
   categoryLabel: string;
   getStatValue: (player: IPlayer) => number;
   showDecimal?: boolean;
+  startIndex?: number;
   type: 'skater' | 'goalie';
 }
 
@@ -17,6 +18,7 @@ export default function StatsTable({
   categoryLabel,
   getStatValue,
   showDecimal = false,
+  startIndex = 0,
   type
 }: StatsTableProps) {
   const navigate = useNavigate();
@@ -48,7 +50,7 @@ export default function StatsTable({
                 className="stats__row"
                 onClick={() => handlePlayerClick(player.id)}
               >
-                <td className="stats__cell stats__cell--rank">{index + 1}</td>
+                <td className="stats__cell stats__cell--rank">{startIndex + index + 1}</td>
                 <td className="stats__cell stats__cell--player">
                   <div className="stats__player-info">
                     <img
