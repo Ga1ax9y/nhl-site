@@ -66,6 +66,9 @@ The service exposes the following endpoints:
 | GET    | `/api/roster/:teamAbbrev`        | Current roster for a 3-letter team code       |
 | GET    | `/api/player/:playerId`          | Landing-page player info                      |
 | GET    | `/api/news`                      | Latest Elite Prospects transactions           |
+| GET    | `/api/game/:gameId/landing`      | Game center landing (preview for upcoming, summary for played) |
+| GET    | `/api/game/:gameId/boxscore`     | Game boxscore (player stats, rosters)          |
+| GET    | `/api/game/:gameId/play-by-play` | Game play-by-play (raw events)                 |
 
 ### curl examples
 
@@ -84,6 +87,9 @@ curl http://localhost:3000/api/stats/current
 
 # Latest transactions news
 curl http://localhost:3000/api/news
+
+# Game center landing for a specific game
+curl http://localhost:3000/api/game/2026020154/landing
 ```
 
 ## Folder Structure
@@ -106,7 +112,7 @@ nhl-api/
 │   └── routes/
 │       ├── index.ts          # Route mounter (ping + one Router per domain)
 │       ├── deps.ts           # RouteDeps: what routers receive (dependency injection)
-│       ├── validation.ts     # Boundary param validation (abbrev/date/playerId)
+│       ├── validation.ts     # Boundary param validation (abbrev/date/playerId/gameId)
 │       └── *.routes.ts       # One router per domain; validation here, no try/catch
 ├── dist/                     # Compiled output (tsc build)
 ├── package.json              # Project metadata and scripts

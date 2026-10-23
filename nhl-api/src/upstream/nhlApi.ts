@@ -11,6 +11,9 @@ export interface NhlApi {
   getRoster(teamAbbrev: string): Promise<unknown>;
   getPlayerLanding(playerId: string): Promise<unknown>;
   getSchedule(date: string): Promise<unknown>;
+  getGameLanding(gameId: string): Promise<unknown>;
+  getGameBoxscore(gameId: string): Promise<unknown>;
+  getGamePlayByPlay(gameId: string): Promise<unknown>;
 }
 
 export function createNhlApi(
@@ -51,5 +54,11 @@ export function createNhlApi(
       upstreamJson('Failed to fetch player info', `${upstream.webBase}/v1/player/${playerId}/landing`),
     getSchedule: (date) =>
       upstreamJson('Failed to fetch schedule', `${upstream.webBase}/v1/schedule/${date}`),
+    getGameLanding: (gameId) =>
+      upstreamJson('Failed to fetch game', `${upstream.webBase}/v1/gamecenter/${gameId}/landing`),
+    getGameBoxscore: (gameId) =>
+      upstreamJson('Failed to fetch game boxscore', `${upstream.webBase}/v1/gamecenter/${gameId}/boxscore`),
+    getGamePlayByPlay: (gameId) =>
+      upstreamJson('Failed to fetch game play-by-play', `${upstream.webBase}/v1/gamecenter/${gameId}/play-by-play`),
   };
 }

@@ -15,3 +15,7 @@ export function isIsoDate(value: string): boolean {
 export function isPlayerId(value: string): boolean {
   return /^\d+$/.test(value);
 }
+
+export function isGameId(value: string): boolean {
+  return /^\d+$/.test(value);
+}
