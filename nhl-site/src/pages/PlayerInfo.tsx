@@ -142,11 +142,45 @@ function SeasonStats({ title, line, isGoalie }: { title: string; line: ISeasonTo
     );
 }
 
-function CareerStats({ title, line, isGoalie }: { title: string; line: ICareerLine; isGoalie: boolean }) {
+function CareerStats({
+    regular,
+    playoffs,
+    isGoalie,
+}: {
+    regular: ICareerLine;
+    playoffs?: ICareerLine;
+    isGoalie: boolean;
+}) {
+    const [split, setSplit] = useState<'regular' | 'playoffs'>('regular');
+    const hasPlayoffs = Boolean(playoffs && playoffs.gamesPlayed);
+    const line = split === 'playoffs' && hasPlayoffs && playoffs ? playoffs : regular;
     const rows = buildCareerRows(line, isGoalie);
 
     return (
-        <Panel title={title}>
+        <Panel title="Career">
+            {hasPlayoffs && (
+                <div className="player__career-tabs" role="tablist" aria-label="Career splits">
+                    <button
+                        type="button"
+                        role="tab"
+                        aria-selected={split === 'regular'}
+                        className={`player__career-tab${split === 'regular' ? ' player__career-tab--active' : ''}`}
+                        onClick={() => setSplit('regular')}
+                    >
+                        Regular
+                    </button>
+                    <button
+                        type="button"
+                        role="tab"
+                        aria-selected={split === 'playoffs'}
+                        className={`player__career-tab${split === 'playoffs' ? ' player__career-tab--active' : ''}`}
+                        onClick={() => setSplit('playoffs')}
+                    >
+                        Playoffs
+                    </button>
+                </div>
+            )}
+
             <div className="player__career-list">
                 {rows.map((row) => (
                     <div className="player__career-item" key={row.label}>
@@ -529,12 +563,12 @@ export default function PlayerInfo() {
 
                 <aside className="player__side">
                     {careerLine && (
-                        <CareerStats title="Career · regular" line={careerLine} isGoalie={isGoalie} />
+                        <CareerStats
+                            regular={careerLine}
+                            playoffs={careerPlayoffs}
+                            isGoalie={isGoalie}
+                        />
                     )}
-
-                    {careerPlayoffs && careerPlayoffs.gamesPlayed ? (
-                        <CareerStats title="Career · playoffs" line={careerPlayoffs} isGoalie={isGoalie} />
-                    ) : null}
 
                     <TeamsTimeline teams={teamsTimeline} logos={teamLogos} />
                 </aside>

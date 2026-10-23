@@ -320,6 +320,53 @@
         white-space: nowrap;
     }
 
+    &__career-tabs {
+        display: flex;
+        margin-bottom: 0.75rem;
+        border: 1px solid var(--color-gray);
+        border-radius: 6px;
+        overflow: hidden;
+    }
+
+    &__career-tab {
+        flex: 1;
+        padding: 0.4rem 0.5rem;
+        border: none;
+        background-color: transparent;
+        font-family: inherit;
+        font-size: 0.68rem;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        color: var(--color-dark-alternate);
+        cursor: pointer;
+        transition:
+            background-color var(--transition-duration),
+            color var(--transition-duration);
+
+        & + & {
+            border-left: 1px solid var(--color-gray);
+        }
+
+        &:hover {
+            color: var(--color-dark);
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--color-dark);
+            outline-offset: -2px;
+        }
+
+        &--active {
+            background-color: var(--color-dark);
+            color: var(--color-light);
+
+            &:hover {
+                color: var(--color-light);
+            }
+        }
+    }
+
     &__career-list {
         display: flex;
         flex-direction: column;
