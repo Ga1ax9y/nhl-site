@@ -8,6 +8,7 @@ import Roster from '../pages/Roster';
 import NotFound from '../pages/NotFound';
 import Home from '../pages/Home';
 import PlayerInfo from '../pages/PlayerInfo';
+import Game from '../pages/Game';
 import Footer from './layout/footer/Footer';
 import ScrollToTop from './layout/scrollToTop/ScrollToTop';
 import Stats from '../pages/Stats';
@@ -57,6 +58,10 @@ const router = createBrowserRouter([
       {
         path: 'player/:playerId',
         element: <PlayerInfo />,
+      },
+      {
+        path: '/game/:gameId',
+        element: <Game />,
       },
       {
         path: '*',

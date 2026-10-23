@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { fetchSchedule } from "../services/nhlApi";
 import type { IGameDay, ILeagueSchedule, IScheduleGame } from "../types/schedule";
 import Loader from "../components/layout/loader/Loader";
@@ -123,7 +124,8 @@ export default function Schedule() {
       {currentDay.games.length > 0 && (
         <ul className="schedule__list">
           {currentDay.games.map((game) => (
-            <li key={game.id} className="schedule__game">
+            <li key={game.id}>
+              <Link className="schedule__game" to={`/game/${game.id}`}>
               <span className="schedule__game-logos">
                 <img
                   className="schedule__team-logo"
@@ -177,6 +179,7 @@ export default function Schedule() {
               </span>
 
               <span className="schedule__game-venue">{game.venue.default}</span>
+              </Link>
             </li>
           ))}
         </ul>
